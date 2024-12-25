@@ -1,12 +1,13 @@
 .container {
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--neutral-50) 0%, white 100%);
-  padding: 2rem 1rem;
+  width: 100%;
 }
 
 .content {
   max-width: 64rem;
   margin: 0 auto;
+  padding-bottom: 10rem;
+  padding-top: 3rem;
 }
 
 .title {

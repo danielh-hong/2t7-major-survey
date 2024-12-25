@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, Reorder } from 'framer-motion';
 import { MdDragIndicator } from 'react-icons/md';
+import Clock from './Clock';
 import styles from './Vote.module.css';
 
 const MAJORS = [
@@ -67,6 +68,8 @@ const Vote = () => {
         <motion.h1 className={styles.title}>
           2T7 EngSci Major Selection Survey
         </motion.h1>
+
+        <Clock />
 
         <motion.div className={styles.card}>
           <div className={styles.dragArea}>

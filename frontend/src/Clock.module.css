@@ -1,0 +1,212 @@
+/* Clock.module.css */
+.clockContainer {
+  width: 100%;
+  max-width: 64rem;
+  margin: 0 auto 2rem;
+  padding: 1.5rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-xl);
+  position: relative;
+}
+
+/* Subtle gradient border */
+.clockContainer::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: -1px;
+  bottom: -1px;
+  left: -1px;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.3) 0%,
+    transparent 50%,
+    rgba(255, 255, 255, 0.3) 100%
+  );
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0.5;
+}
+
+.infoSection {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.clockTitle {
+  font-size: 1.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--primary-900) 0%, var(--primary-700) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+
+.infoIcon {
+  color: var(--primary-400);
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+
+.clockGrid {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+}
+
+.timeBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.numberBox {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: var(--radius-lg);
+  padding: 1rem 1.25rem;
+  min-width: 85px;
+}
+
+.number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-700);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.05em;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--neutral-600);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.separator {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-300);
+  margin-top: -1rem;
+}
+
+.tooltipContainer {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.infoIcon {
+  color: var(--primary-400);
+  cursor: help;
+  transition: all 0.2s ease;
+}
+
+.tooltipContainer:hover .infoIcon {
+  color: var(--primary-600);
+}
+
+.tooltip {
+  position: absolute;
+  visibility: hidden;
+  opacity: 0;
+  background: var(--neutral-900);
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  width: max-content;
+  max-width: 300px;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-10px);
+  transition: all 0.2s ease;
+  z-index: 1000;
+  box-shadow: var(--shadow-lg);
+  pointer-events: none;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: var(--neutral-900);
+}
+
+.tooltipContainer:hover .tooltip {
+  visibility: visible;
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+@media (max-width: 768px) {
+  .clockContainer {
+    margin: 1rem;
+    padding: 1.25rem;
+  }
+
+  .clockTitle {
+    font-size: 1.5rem;
+  }
+
+  .clockGrid {
+    gap: 0.5rem;
+  }
+
+  .numberBox {
+    min-width: 70px;
+    padding: 0.75rem 1rem;
+  }
+
+  .number {
+    font-size: 2rem;
+  }
+
+  .separator {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .clockContainer {
+    padding: 1rem;
+  }
+
+  .clockTitle {
+    font-size: 1.25rem;
+  }
+
+  .numberBox {
+    min-width: 60px;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .number {
+    font-size: 1.75rem;
+  }
+
+  .separator {
+    font-size: 1.75rem;
+  }
+
+  .label {
+    font-size: 0.75rem;
+  }
+}

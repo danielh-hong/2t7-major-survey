@@ -1,0 +1,99 @@
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  max-width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  overflow: hidden;
+  background: linear-gradient(to bottom, #e2f8fe 0%, #f5d9c8 100%);
+}
+
+.sunContainer {
+  position: absolute;
+  top: 100px;
+  right: 100px;
+}
+
+.sun {
+  width: 120px;
+  height: 120px;
+  background: #FFD700;
+  border-radius: 50%;
+  box-shadow: 0 0 50px rgba(255, 215, 0, 0.4);
+  animation: sunPulse 4s ease-in-out infinite;
+}
+
+.sunGlow {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  right: -20px;
+  bottom: -20px;
+  background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: sunGlowPulse 4s ease-in-out infinite;
+}
+
+.cloudContainer {
+  position: absolute;
+  left: 0;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.cloud {
+  position: relative;
+  width: 200px;
+  height: 60px;
+}
+
+.cloudPart {
+  position: absolute;
+  background: white;
+  border-radius: 30px;
+}
+
+.cloudPartMain {
+  width: 100px;
+  height: 40px;
+  top: 20px;
+  left: 50px;
+}
+
+.cloudPartLeft {
+  width: 60px;
+  height: 60px;
+  top: 0;
+  left: 25px;
+}
+
+.cloudPartRight {
+  width: 80px;
+  height: 50px;
+  top: 10px;
+  left: 90px;
+}
+
+@keyframes sunPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+}
+
+@keyframes sunGlowPulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(1.2);
+  }
+}

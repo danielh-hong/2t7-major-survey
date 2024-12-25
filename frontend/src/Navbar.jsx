@@ -9,10 +9,9 @@ const Navbar = () => {
   
   return (
     <nav className={styles.navbar}>
-      <div className={styles.horizontalLine}></div>
       <div className={styles.container}>
-        <div className={styles.content}>
-          <div className={styles.linkGroup}>
+        <div className={styles.navContent}>
+          <div className={styles.linksContainer}>
             <Link
               to="/vote"
               className={`${styles.link} ${location.pathname === '/vote' ? styles.activeLink : ''}`}
@@ -20,7 +19,7 @@ const Navbar = () => {
               <MdHowToVote className={styles.icon} />
               Vote
             </Link>
-            <div className={styles.divider}></div>
+
             <Link
               to="/results"
               className={`${styles.link} ${location.pathname === '/results' ? styles.activeLink : ''}`}
@@ -29,7 +28,9 @@ const Navbar = () => {
               Results
             </Link>
           </div>
+
           <div className={styles.divider}></div>
+
           <a 
             href="https://github.com/danielh-hong/2t7-major-survey" 
             target="_blank" 
