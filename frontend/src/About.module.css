@@ -50,6 +50,7 @@
     var(--primary-500)
   );
   -webkit-background-clip: text;
+  background-clip: text;
   color: transparent;
   margin-bottom: 1rem;
 }
@@ -189,6 +190,39 @@
 .alternativeContact a:hover {
   color: var(--primary-700);
 }
+
+
+
+.errorInput {
+  border-color: var(--error-500) !important;
+  background-color: var(--error-50);
+}
+
+.errorMessage {
+  color: var(--error-600);
+  font-size: 0.875rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.successMessage {
+  text-align: center;
+  padding: 2rem;
+  background-color: var(--success-50);
+  border: 1px solid var(--success-200);
+  border-radius: var(--radius-lg);
+  color: var(--success-700);
+  font-weight: 500;
+  font-size: 1.1rem;
+  margin: 2rem 0;
+}
+
+.submitButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
 
 /* Responsive Adjustments */
 @media (max-width: 1024px) {

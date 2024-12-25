@@ -1,10 +1,9 @@
-// Vote.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { GripVertical, Trophy, Medal } from 'lucide-react';
-import Confetti from './Confetti'; // Ensure this path is correct
+import { GripVertical, Trophy, Medal, Check } from 'lucide-react';
+import Confetti from './Confetti';
 import Clock from './Clock';
 import styles from './Vote.module.css';
 
@@ -20,7 +19,7 @@ const MAJORS = [
 ];
 
 const DraggableItem = ({ id, index, text, moveItem }) => {
-  const [{ isDragging }, drag] = useDrag({
+  const [{ isDragging }, drag, dragPreview] = useDrag({
     type: 'major',
     item: { index },
     collect: (monitor) => ({
@@ -38,7 +37,6 @@ const DraggableItem = ({ id, index, text, moveItem }) => {
     }
   });
 
-  // Enhanced ranking indicators for top 3
   const getRankingElement = (index) => {
     if (index === 0) {
       return (
@@ -66,15 +64,16 @@ const DraggableItem = ({ id, index, text, moveItem }) => {
     );
   };
 
-  const itemClass = `${styles.majorItem} ${isDragging ? styles.dragging : ''} ${
-    index < 3 ? styles[`topThree${index + 1}`] : ''
-  }`;
-
   return (
-    <div ref={(node) => drag(drop(node))} className={itemClass}>
-      {getRankingElement(index)}
-      <span className={styles.majorName}>{text}</span>
-      <GripVertical className={styles.dragIcon} />
+    <div ref={dragPreview} style={{ opacity: isDragging ? 0.5 : 1 }}>
+      <div
+        ref={(node) => drag(drop(node))}
+        className={`${styles.majorItem} ${isDragging ? styles.dragging : ''}`}
+      >
+        {getRankingElement(index)}
+        <span className={styles.majorName}>{text}</span>
+        <GripVertical className={styles.dragIcon} />
+      </div>
     </div>
   );
 };
@@ -98,7 +97,6 @@ const Vote = () => {
   const handleSubmit = async () => {
     if (isSubmitting) return;
 
-    // Prepare data based on user decision
     const data = {
       hasDecided: hasDecided === 'yes',
       preferences: {
@@ -108,7 +106,6 @@ const Vote = () => {
       }
     };
 
-    // If decided, add confirmed major
     if (hasDecided === 'yes') {
       data.confirmedMajor = confirmedMajor;
     }
@@ -128,15 +125,11 @@ const Vote = () => {
         throw new Error(errorData.error || 'Failed to submit survey');
       }
 
-      // Successful submission
       setShowConfetti(true);
-      console.log('Survey submitted successfully');
-      
-      // Redirect to results after 6 seconds
       setTimeout(() => {
         setShowConfetti(false);
         navigate('/results');
-      }, 3500); // Match the confetti duration
+      }, 3500);
     } catch (error) {
       setError(error.message);
       setIsSubmitting(false);
@@ -144,21 +137,17 @@ const Vote = () => {
   };
 
   const isValid = hasDecided !== null && 
-    (
-      (hasDecided === 'no' && majors.length >= 3) ||
-      (hasDecided === 'yes' && confirmedMajor)
-    );
+    ((hasDecided === 'no' && majors.length >= 3) ||
+     (hasDecided === 'yes' && confirmedMajor));
 
   return (
     <div className={styles.container}>
-      <div className={styles.ConfettiOverlay}>
-        {showConfetti && (
-          <Confetti 
-            active={showConfetti} 
-            duration={3500}  // 6 seconds
-          />
-        )}
-      </div>
+      {showConfetti && (
+        <div className={styles.confettiOverlay}>
+          <Confetti active={showConfetti} duration={3500} />
+        </div>
+      )}
+      
       <div className={styles.content}>
         <h1 className={styles.title}>
           2T7 EngSci Major Selection Survey
@@ -174,8 +163,9 @@ const Vote = () => {
             <p className={styles.dragSubtitle}>
               Drag and rank the majors in your order of preference. Your top 3 choices will be recorded.
             </p>
+            
             <DndProvider backend={HTML5Backend}>
-              <div className={styles.reorderGroup}>
+              <div>
                 {majors.map((major, index) => (
                   <DraggableItem
                     key={major}
@@ -193,8 +183,9 @@ const Vote = () => {
             <h2 className={styles.decisionTitle}>
               Have you decided on your major?
             </h2>
+            
             <div className={styles.decisionGroup}>
-              <label className={styles.radioLabel}>
+                            <label className={`${styles.radioCard} ${hasDecided === 'yes' ? styles.selected : ''}`}>
                 <input
                   type="radio"
                   className={styles.radioInput}
@@ -203,9 +194,11 @@ const Vote = () => {
                   checked={hasDecided === 'yes'}
                   onChange={() => setHasDecided('yes')}
                 />
-                <span>Yes, I'm certain</span>
+                <Check className={hasDecided === 'yes' ? 'text-primary-500' : 'text-neutral-300'} />
+                <span className={styles.radioLabel}>Yes, I'm certain</span>
               </label>
-              <label className={styles.radioLabel}>
+
+              <label className={`${styles.radioCard} ${hasDecided === 'no' ? styles.selected : ''}`}>
                 <input
                   type="radio"
                   className={styles.radioInput}
@@ -214,26 +207,29 @@ const Vote = () => {
                   checked={hasDecided === 'no'}
                   onChange={() => setHasDecided('no')}
                 />
-                <span>No, still deciding</span>
+                <span className={styles.radioLabel}>No, still deciding</span>
               </label>
             </div>
 
             {hasDecided === 'yes' && (
-              <div className={styles.confirmedMajor}>
-                <label htmlFor="confirmedMajor">Select Your Confirmed Major:</label>
-                <select
-                  id="confirmedMajor"
-                  value={confirmedMajor}
-                  onChange={(e) => setConfirmedMajor(e.target.value)}
-                  className={styles.selectInput}
-                >
-                  <option value="">--Select Major--</option>
+              <div className={styles.fadeIn}>
+                <h3 className={styles.decisionTitle}>Select Your Confirmed Major</h3>
+                <div className={styles.majorGrid}>
                   {majors.map((major) => (
-                    <option key={major} value={major}>
-                      {major}
-                    </option>
+                    <button
+                      key={major}
+                      onClick={() => setConfirmedMajor(major)}
+                      className={`${styles.majorOption} ${
+                        confirmedMajor === major ? styles.selected : ''
+                      }`}
+                    >
+                      <span className={styles.majorOptionText}>{major}</span>
+                      {confirmedMajor === major && (
+                        <Check className="text-primary-500" />
+                      )}
+                    </button>
                   ))}
-                </select>
+                </div>
               </div>
             )}
 

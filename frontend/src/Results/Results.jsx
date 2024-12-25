@@ -1,11 +1,16 @@
-// Results.jsx
 import React, { useState, useEffect } from 'react';
 import { 
-  BarChart3, PieChart as PieChartIcon, Table2, TrendingUp, Users, HelpCircle 
+  BarChart3, 
+  PieChart as PieChartIcon, 
+  Table2, 
+  TrendingUp, 
+  Users, 
+  HelpCircle 
 } from 'lucide-react';
+import FilteredChoices from './FilteredChoices';
 import styles from './Results.module.css';
 
-// Import the separate chart components
+// Import chart components (assuming they exist)
 import CombinedBarChart from './CombinedBarChart';
 import IndividualBarCharts from './IndividualBarCharts';
 import PieCharts from './PieCharts';
@@ -21,15 +26,9 @@ const MAJORS = [
   'Robotics'
 ];
 
-const COLORS = [
-  '#4CAF50', '#2196F3', '#FFC107', 
-  '#FF5722', '#9C27B0', '#00BCD4', 
-  '#E91E63', '#FF9800'
-];
-
 const Results = () => {
-  const [activeViewTab, setActiveViewTab] = useState('charts'); // 'charts' or 'individual'
-  const [activeChartTab, setActiveChartTab] = useState('combined'); // 'combined', 'individual', 'pie'
+  const [activeViewTab, setActiveViewTab] = useState('charts');
+  const [activeChartTab, setActiveChartTab] = useState('individual');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,7 +50,23 @@ const Results = () => {
     }
   };
 
-  const formatCombinedChartData = () => {
+  if (loading) {
+    return (
+      <div className={styles.loadingState}>
+        <div className={styles.loadingText}>Loading results...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.errorState}>
+        <div className={styles.errorText}>Error: {error}</div>
+      </div>
+    );
+  }
+
+  const formatChartData = () => {
     return MAJORS.map(major => ({
       name: major,
       first: data?.firstChoiceStats?.find(s => s._id === major)?.count || 0,
@@ -60,186 +75,123 @@ const Results = () => {
     }));
   };
 
-  const formatPieChartData = (choiceType) => {
-    return MAJORS.map(major => ({
-      name: major,
-      value: data?.[`${choiceType.toLowerCase()}ChoiceStats`]?.find(s => s._id === major)?.count || 0
-    }));
-  };
-
-  const renderCombinedBarChart = () => (
-    <CombinedBarChart data={formatCombinedChartData()} />
+  // Helper Components
+  const Tab = ({ active, onClick, icon: Icon, children }) => (
+    <button
+      onClick={onClick}
+      className={`${styles.tab} ${active ? styles.tabActive : ''}`}
+    >
+      <Icon size={20} />
+      <span>{children}</span>
+    </button>
   );
 
-  const renderIndividualBarCharts = () => (
-    <IndividualBarCharts data={formatCombinedChartData()} />
-  );
-
-  const renderPieCharts = () => (
-    <PieCharts data={formatCombinedChartData()} />
-  );
-
-  const renderIndividualChoicesTable = () => (
-    <div className={styles.tableCard}>
-      <div className={styles.tableContainer}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>First Choice</th>
-              <th>Second Choice</th>
-              <th>Third Choice</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.responses?.map((response, index) => (
-              <tr key={index}>
-                <td>{response.preferences.firstChoice}</td>
-                <td>{response.preferences.secondChoice}</td>
-                <td>{response.preferences.thirdChoice}</td>
-                <td>
-                  <span className={`${styles.status} ${
-                    response.hasDecided ? styles.decidedStatus : styles.undecidedStatus
-                  }`}>
-                    {response.hasDecided ? 'Decided' : 'Undecided'}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+  const StatsCard = ({ label, value, icon: Icon, variant }) => (
+    <div className={`${styles.statsCard} ${styles[`statsCard${variant}`]}`}>
+      <div className={styles.statsContent}>
+        <div className={styles.statsInfo}>
+          <p className={styles.statsLabel}>{label}</p>
+          <p className={styles.statsValue}>{value}</p>
+        </div>
+        <Icon className={styles.statsIcon} />
       </div>
     </div>
   );
-
-  if (loading) {
-    return (
-      <div className={styles.loadingContainer}>
-        <div className={styles.loadingText}>Loading results...</div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className={styles.errorContainer}>
-        <div className={styles.errorText}>Error: {error}</div>
-      </div>
-    );
-  }
 
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        
-        {/* Header Section */}
-        <div className={styles.header}>
+        {/* Header */}
+        <header className={styles.header}>
           <h1 className={styles.title}>EngSci Major Selection Results</h1>
           <p className={styles.subtitle}>Class of 2T7 Major Preferences Dashboard</p>
-        </div>
+        </header>
 
-        {/* View Tabs */}
-        <div className={styles.tabs}>
-          <button
+        {/* Main Navigation Tabs */}
+        <div className={styles.tabsContainer}>
+          <Tab 
+            active={activeViewTab === 'charts'} 
             onClick={() => setActiveViewTab('charts')}
-            className={`${styles.tab} ${activeViewTab === 'charts' ? styles.activeTab : ''}`}
+            icon={BarChart3}
           >
-            <BarChart3 />
-            <span>Charts</span>
-          </button>
-          
-          <button
+            Charts
+          </Tab>
+          <Tab 
+            active={activeViewTab === 'individual'} 
             onClick={() => setActiveViewTab('individual')}
-            className={`${styles.tab} ${activeViewTab === 'individual' ? styles.activeTab : ''}`}
+            icon={Table2}
           >
-            <Table2 />
-            <span>Individual Choices</span>
-          </button>
+            Individual Choices
+          </Tab>
         </div>
 
-        {/* Stats Cards */}
-        <div className={styles.statsGrid}>
-          <div className={styles.statsCard}>
-            <div className={styles.statsContent}>
-              <div>
-                <p className={styles.statsLabel}>Total Responses</p>
-                <p className={styles.statsValue}>{data.totalResponses}</p>
-              </div>
-              <Users className={styles.statsIcon} />
-            </div>
-          </div>
-          
-          <div className={styles.statsCard}>
-            <div className={styles.statsContent}>
-              <div>
-                <p className={styles.statsLabel}>Decided</p>
-                <p className={`${styles.statsValue} ${styles.decidedValue}`}>
-                  {data.decidedCount}
-                </p>
-              </div>
-              <TrendingUp className={styles.statsIcon} />
-            </div>
-          </div>
-          
-          <div className={styles.statsCard}>
-            <div className={styles.statsContent}>
-              <div>
-                <p className={styles.statsLabel}>Undecided</p>
-                <p className={`${styles.statsValue} ${styles.undecidedValue}`}>
-                  {data.undecidedCount}
-                </p>
-              </div>
-              <HelpCircle className={styles.statsIcon} />
-            </div>
-          </div>
-        </div>
-
-
-        {/* Conditional Rendering Based on Active View Tab */}
+        {/* Stats Grid - Only show in charts view */}
         {activeViewTab === 'charts' && (
-          <>
-            {/* Charts Tabs */}
-            <div className={styles.chartsTabs}>
-              <button
-                onClick={() => setActiveChartTab('combined')}
-                className={`${styles.chartTab} ${activeChartTab === 'combined' ? styles.activeChartTab : ''}`}
-              >
-                <BarChart3 />
-                <span>Combined Chart</span>
-              </button>
-              
-              <button
-                onClick={() => setActiveChartTab('individual')}
-                className={`${styles.chartTab} ${activeChartTab === 'individual' ? styles.activeChartTab : ''}`}
-              >
-                <BarChart3 />
-                <span>Individual Charts</span>
-              </button>
-              
-              <button
-                onClick={() => setActiveChartTab('pie')}
-                className={`${styles.chartTab} ${activeChartTab === 'pie' ? styles.activeChartTab : ''}`}
-              >
-                <PieChartIcon />
-                <span>Pie Charts</span>
-              </button>
-            </div>
-
-            {/* Render Charts Based on Active Chart Tab */}
-            <div className={styles.chartContainer}>
-              {activeChartTab === 'combined' && renderCombinedBarChart()}
-              {activeChartTab === 'individual' && renderIndividualBarCharts()}
-              {activeChartTab === 'pie' && renderPieCharts()}
-            </div>
-          </>
+          <div className={styles.statsGrid}>
+            <StatsCard 
+              label="Total Responses" 
+              value={data.totalResponses}
+              icon={Users}
+              variant="Primary"
+            />
+            <StatsCard 
+              label="Decided" 
+              value={data.decidedCount}
+              icon={TrendingUp}
+              variant="Success"
+            />
+            <StatsCard 
+              label="Undecided" 
+              value={data.undecidedCount}
+              icon={HelpCircle}
+              variant="Warning"
+            />
+          </div>
         )}
 
-        {/* Individual Choices Table */}
-        {activeViewTab === 'individual' && renderIndividualChoicesTable()}
+        {/* Charts View */}
+        {activeViewTab === 'charts' && (
+          <div className={styles.chartSection}>
+            <div className={styles.tabsContainer}>
+              <Tab 
+                active={activeChartTab === 'individual'} 
+                onClick={() => setActiveChartTab('individual')}
+                icon={BarChart3}
+              >
+                Individual Charts
+              </Tab>
 
+              <Tab 
+                active={activeChartTab === 'combined'} 
+                onClick={() => setActiveChartTab('combined')}
+                icon={BarChart3}
+              >
+                Combined Chart
+              </Tab>
+
+              <Tab 
+                active={activeChartTab === 'pie'} 
+                onClick={() => setActiveChartTab('pie')}
+                icon={PieChartIcon}
+              >
+                Pie Charts
+              </Tab>
+            </div>
+
+            {activeChartTab === 'combined' && <CombinedBarChart data={formatChartData()} />}
+            {activeChartTab === 'individual' && <IndividualBarCharts data={formatChartData()} />}
+            {activeChartTab === 'pie' && <PieCharts data={formatChartData()} />}
+          </div>
+        )}
+
+        {/* Individual Choices View */}
+        {activeViewTab === 'individual' && (
+          <FilteredChoices data={data} />
+        )}
       </div>
     </div>
   );
 };
+
 
 export default Results;

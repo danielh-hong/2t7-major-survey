@@ -1,69 +1,100 @@
-/* Results.module.css */
+/* FilteredChoices.module.css */
 .container {
-  min-height: 100vh;
-  padding: 2rem;
-}
-
-.content {
-  max-width: 1400px;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
+  gap: 2rem;
+  width: 100%;
 }
 
-/* Header Styles */
-.header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.title {
-  font-size: 3.5rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(135deg, var(--primary-700), var(--primary-500));
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-.subtitle {
-  font-size: 1.25rem;
-  color: var(--neutral-500);
-}
-
-/* Tab Navigation */
-.tabsContainer {
+/* Controls Section */
+.controls {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: white;
+  padding: 1.5rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--neutral-200);
+  box-shadow: var(--shadow-md);
 }
 
-.tab {
+/* Search Section */
+.searchWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--neutral-400);
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 3rem;
+  border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
+  font-size: 1rem;
+  color: var(--neutral-900);
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: var(--primary-400);
+  box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+.searchInput::placeholder {
+  color: var(--neutral-400);
+}
+
+/* Filter Section */
+.filterSection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+}
+
+.filterLabel {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.875rem 1.5rem;
-  border-radius: var(--radius-lg);
+  gap: 0.5rem;
+  color: var(--neutral-600);
   font-weight: 500;
-  transition: all 0.2s ease;
+}
+
+.filterButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.filterButton {
+  padding: 0.5rem 1rem;
   border: 1px solid var(--neutral-200);
+  border-radius: var(--radius-lg);
   background: white;
   color: var(--neutral-600);
+  font-size: 0.875rem;
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.tab:hover {
+.filterButton:hover {
   background: var(--neutral-50);
   border-color: var(--neutral-300);
-  transform: translateY(-1px);
 }
 
-.tabActive {
+.filterButtonActive {
   background: var(--primary-50);
   border-color: var(--primary-200);
   color: var(--primary-700);
-  box-shadow: var(--shadow-md);
 }
 
 /* Stats Grid */
@@ -71,7 +102,6 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
-  margin-bottom: 1.5rem;
 }
 
 .statsCard {
@@ -80,6 +110,28 @@
   padding: 1.5rem;
   border: 1px solid var(--neutral-200);
   transition: all 0.3s ease;
+  position: relative;
+}
+
+.statsCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-xl);
+  padding: 2px;
+  background: linear-gradient(
+    to bottom right, 
+    var(--primary-100), 
+    var(--neutral-200)
+  );
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
 }
 
 .statsCard:hover {
@@ -108,15 +160,15 @@
   font-weight: 700;
 }
 
-.statsValuePrimary {
+.statsCardPrimary .statsValue {
   color: var(--primary-600);
 }
 
-.statsValueSuccess {
+.statsCardSuccess .statsValue {
   color: var(--success-500);
 }
 
-.statsValueWarning {
+.statsCardWarning .statsValue {
   color: var(--warning-500);
 }
 
@@ -124,32 +176,6 @@
   width: 2.5rem;
   height: 2.5rem;
   color: var(--neutral-400);
-}
-
-/* Chart Section */
-.chartSection {
-  background: white;
-  border-radius: var(--radius-xl);
-  padding: 2rem;
-  border: 1px solid var(--neutral-200);
-  box-shadow: var(--shadow-md);
-  flex: 1;
-  min-height: max-content;
-}
-
-.chartHeader {
-  margin-bottom: 2rem;
-}
-
-.chartTitle {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--neutral-900);
-  margin-bottom: 0.5rem;
-}
-
-.chartDescription {
-  color: var(--neutral-500);
 }
 
 /* Table Styles */
@@ -205,84 +231,44 @@
   color: var(--warning-700);
 }
 
-/* Loading & Error States */
-.loadingState, .errorState {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--neutral-50);
-}
-
-.loadingText {
-  font-size: 1.5rem;
-  color: var(--primary-600);
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-
-.errorText {
-  font-size: 1.5rem;
-  color: var(--error-700);
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+/* No Results Message */
+.noResults {
+  text-align: center;
+  padding: 3rem;
+  color: var(--neutral-500);
+  font-size: 1.125rem;
+  background: white;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--neutral-200);
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .chartSection {
-    padding: 1rem;
-  }
   .statsGrid {
     grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .title {
-    font-size: 3rem;
   }
 }
 
 @media (max-width: 768px) {
-  .container {
+  .controls {
     padding: 1rem;
+  }
+
+  .filterSection {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .statsGrid {
     grid-template-columns: 1fr;
   }
 
-  .tabsContainer {
-    flex-direction: column;
-  }
-
-  .title {
-    font-size: 2.5rem;
-  }
-
   .statsValue {
     font-size: 2rem;
   }
-}
 
-/* Chart Customization */
-:global(.recharts-tooltip-wrapper) {
-  background: white;
-  border: 1px solid var(--neutral-200);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-}
-
-:global(.recharts-legend-item) {
-  font-size: 0.875rem;
-}
-
-:global(.recharts-cartesian-grid-horizontal line),
-:global(.recharts-cartesian-grid-vertical line) {
-  stroke: var(--neutral-200);
+  .table th,
+  .table td {
+    padding: 0.75rem 1rem;
+  }
 }
