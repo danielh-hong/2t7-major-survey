@@ -1,0 +1,248 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(180deg, var(--neutral-50) 0%, white 100%);
+  padding: 2rem 1rem;
+  color: var(--neutral-900);
+}
+
+.content {
+  max-width: 75rem;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--primary-900) 0%, var(--primary-700) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: var(--neutral-500);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.statsCard {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  border: 1px solid var(--neutral-200);
+  box-shadow: var(--shadow-md);
+  transition: transform 0.3s ease;
+}
+
+.statsCard:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.statsContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.statsLabel {
+  font-size: 0.9rem;
+  color: var(--neutral-500);
+  margin-bottom: 0.5rem;
+}
+
+.statsValue {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-600);
+}
+
+.decidedValue {
+  color: var(--success-500);
+}
+
+.undecidedValue {
+  color: var(--warning-500);
+}
+
+.statsIcon {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--neutral-400);
+}
+
+.tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-md);
+  background: white;
+  color: var(--neutral-600);
+  border: 1px solid var(--neutral-200);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab:hover {
+  background: var(--neutral-50);
+  border-color: var(--neutral-300);
+}
+
+.activeTab {
+  background: var(--primary-50);
+  border-color: var(--primary-200);
+  color: var(--primary-700);
+}
+
+.chartsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.chartCard {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  border: 1px solid var(--neutral-200);
+  box-shadow: var(--shadow-md);
+}
+
+.chartTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--neutral-900);
+}
+
+.tableCard {
+  background: white;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--neutral-200);
+  box-shadow: var(--shadow-md);
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table th {
+  background: var(--neutral-50);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--neutral-700);
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.table td {
+  padding: 1rem;
+  color: var(--neutral-700);
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.table tr:hover {
+  background: var(--neutral-50);
+}
+
+.status {
+  display: inline-flex;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.decidedStatus {
+  background: var(--success-50);
+  color: var(--success-700);
+}
+
+.undecidedStatus {
+  background: var(--warning-50);
+  color: var(--warning-700);
+}
+
+.loadingContainer {
+  min-height: 100vh;
+  background: var(--neutral-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loadingText {
+  font-size: 1.2rem;
+  color: var(--primary-600);
+}
+
+.errorContainer {
+  min-height: 100vh;
+  background: var(--neutral-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.errorText {
+  color: var(--error-700);
+  font-size: 1.2rem;
+}
+
+/* Chart colors */
+:global(.chart-bar-1) {
+  fill: var(--primary-400);
+}
+
+:global(.chart-bar-2) {
+  fill: var(--primary-500);
+}
+
+:global(.chart-bar-3) {
+  fill: var(--primary-600);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 2rem;
+  }
+}
