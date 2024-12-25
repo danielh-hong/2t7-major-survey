@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { GripVertical, Trophy, Medal } from 'lucide-react';
-import Confetti from './Results/Confetti'; // Ensure this path is correct
+import Confetti from './Confetti'; // Ensure this path is correct
 import Clock from './Clock';
 import styles from './Vote.module.css';
 
@@ -136,7 +136,7 @@ const Vote = () => {
       setTimeout(() => {
         setShowConfetti(false);
         navigate('/results');
-      }, 6000); // Match the confetti duration
+      }, 3500); // Match the confetti duration
     } catch (error) {
       setError(error.message);
       setIsSubmitting(false);
@@ -155,7 +155,7 @@ const Vote = () => {
         {showConfetti && (
           <Confetti 
             active={showConfetti} 
-            duration={6000}  // 6 seconds
+            duration={3500}  // 6 seconds
           />
         )}
       </div>
