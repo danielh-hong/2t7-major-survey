@@ -1,0 +1,41 @@
+/* Confetti.module.css */
+.confettiContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+.confettiParticle {
+  position: absolute;
+  transform-origin: center;
+  transition: all 0.5s ease-out;
+  will-change: transform, opacity;
+}
+
+.confettiRectangle {
+  transform: rotate(45deg);
+}
+
+.confettiTriangle {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+@keyframes burst {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(720deg);
+    opacity: 0;
+  }
+}

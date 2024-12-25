@@ -3,7 +3,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Vote from './Vote';
-import Results from './Results';
+import Results from './Results/Results';
 import About from './About'; // Import the About component
 import Navbar from './Navbar';
 import AnimatedBackground from './AnimatedBackground';

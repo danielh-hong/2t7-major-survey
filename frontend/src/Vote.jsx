@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+// Vote.jsx
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { GripVertical, Trophy, Medal } from 'lucide-react';
+import Confetti from './Results/Confetti'; // Ensure this path is correct
 import Clock from './Clock';
 import styles from './Vote.module.css';
-
 
 const MAJORS = [
   'Aerospace',
@@ -64,7 +66,6 @@ const DraggableItem = ({ id, index, text, moveItem }) => {
     );
   };
 
-
   const itemClass = `${styles.majorItem} ${isDragging ? styles.dragging : ''} ${
     index < 3 ? styles[`topThree${index + 1}`] : ''
   }`;
@@ -78,62 +79,8 @@ const DraggableItem = ({ id, index, text, moveItem }) => {
   );
 };
 
-const Confetti = ({ active }) => {
-  const [particles, setParticles] = useState([]);
-
-  useEffect(() => {
-    if (active) {
-      const newParticles = Array.from({ length: 200 }, (_, i) => ({
-        id: i,
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        size: Math.random() * 8 + 4,
-        color: ['#FFD700', '#FFA500', '#FF69B4', '#4169E1'][Math.floor(Math.random() * 4)],
-        angle: Math.random() * 360,
-        speed: Math.random() * 3 + 2,
-      }));
-      setParticles(newParticles);
-    } else {
-      setParticles([]);
-    }
-  }, [active]);
-
-  useEffect(() => {
-    if (active) {
-      const interval = setInterval(() => {
-        setParticles((prevParticles) =>
-          prevParticles.map((particle) => ({
-            ...particle,
-            y: particle.y + particle.speed,
-            angle: particle.angle + 2,
-          }))
-        );
-      }, 16);
-      return () => clearInterval(interval);
-    }
-  }, [active]);
-
-  return (
-    <div className={styles.confettiContainer}>
-      {particles.map((particle) => (
-        <div
-          key={particle.id}
-          className={styles.confettiParticle}
-          style={{
-            left: particle.x,
-            top: particle.y,
-            width: particle.size,
-            height: particle.size,
-            background: particle.color,
-            transform: `rotate(${particle.angle}deg)`,
-          }}
-        />
-      ))}
-    </div>
-  );
-};
-
 const Vote = () => {
+  const navigate = useNavigate();
   const [majors, setMajors] = useState(MAJORS);
   const [hasDecided, setHasDecided] = useState(null);
   const [confirmedMajor, setConfirmedMajor] = useState('');
@@ -183,11 +130,15 @@ const Vote = () => {
 
       // Successful submission
       setShowConfetti(true);
-      setTimeout(() => setShowConfetti(false), 5000);
-      // Optionally reset the form or redirect the user
+      console.log('Survey submitted successfully');
+      
+      // Redirect to results after 6 seconds
+      setTimeout(() => {
+        setShowConfetti(false);
+        navigate('/results');
+      }, 6000); // Match the confetti duration
     } catch (error) {
       setError(error.message);
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -200,7 +151,14 @@ const Vote = () => {
 
   return (
     <div className={styles.container}>
-      <Confetti active={showConfetti} />
+      <div className={styles.ConfettiOverlay}>
+        {showConfetti && (
+          <Confetti 
+            active={showConfetti} 
+            duration={6000}  // 6 seconds
+          />
+        )}
+      </div>
       <div className={styles.content}>
         <h1 className={styles.title}>
           2T7 EngSci Major Selection Survey

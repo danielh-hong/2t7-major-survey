@@ -1,0 +1,20 @@
+/* IndividualBarCharts.module.css */
+.chartsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.chartCard {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.chartTitle {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--neutral-900);
+}

@@ -1,0 +1,15 @@
+/* CombinedBarChart.module.css */
+.chartWrapper {
+  background: white;
+  border-radius: var(--radius-xl);
+  padding: 2rem;
+  margin-bottom: 3rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.chartTitle {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: var(--neutral-900);
+}

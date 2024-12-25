@@ -1,53 +1,124 @@
-/* src/About.module.css */
-
+/* Modern, Sleek About Page Styles */
 .aboutContainer {
   min-height: 100vh;
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 4rem 2rem;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 2rem;
+  position: relative;
+  overflow: hidden;
 }
 
-.header {
+.section {
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(
+    135deg, 
+    var(--neutral-50), 
+    var(--neutral-100)
+  );
+  backdrop-filter: var(--glass-blur);
+  border-radius: var(--radius-2xl);
+  padding: 3rem;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.3s ease;
+}
+
+.section:hover {
+  transform: translateY(-5px);
+}
+
+/* Header Section */
+.headerSection {
   text-align: center;
-  margin-bottom: 3rem;
+  background: linear-gradient(
+    135deg, 
+    var(--neutral-50), 
+    var(--neutral-100)
+  );
 }
 
-.header h1 {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: var(--primary-700);
+.mainTitle {
+  font-size: 3rem;
+  padding-bottom: 0.5rem;
+  font-weight: 900;
+  background: linear-gradient(
+    to right, 
+    var(--primary-700), 
+    var(--primary-500)
+  );
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 1rem;
 }
 
-.description {
-  max-width: 800px;
+.subtitle {
+  font-size: 1.25rem;
+  color: var(--neutral-600);
+  font-weight: 500;
+}
+
+/* Description Section */
+.descriptionSection {
+  display: flex;
+  justify-content: center;
+}
+
+.descriptionContent {
+  display: flex;
+  gap: 3rem;
   width: 100%;
-  font-size: 1.125rem;
-  line-height: 1.6;
-  color: var(--neutral-700);
-  margin-bottom: 3rem;
 }
 
-.description p {
-  margin-bottom: 1.5rem;
+.descriptionBlock {
+  flex: 1;
 }
 
-.contact {
-  max-width: 600px;
-  width: 100%;
-}
-
-.contact h2 {
-  font-size: 1.75rem;
+.sectionTitle {
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--neutral-800);
-  text-align: center;
-  margin-bottom: 1.5rem;
+  color: var(--primary-700);
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.sectionTitle::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  width: 50px;
+  height: 4px;
+  background: var(--primary-500);
+  border-radius: 2px;
+}
+
+.descriptionBlock p {
+  color: var(--neutral-700);
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+/* Contact Section */
+.contactSection {
+  background: linear-gradient(
+    135deg, 
+    var(--neutral-50), 
+    var(--neutral-100)
+  );
 }
 
 .contactForm {
   display: flex;
   flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
 }
 
@@ -57,101 +128,104 @@
 }
 
 .formGroup label {
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  color: var(--neutral-600);
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: var(--neutral-700);
 }
 
 .formGroup input,
 .formGroup textarea {
-  padding: 0.75rem 1rem;
+  width: 100%;
+  padding: 1rem;
   border: 1px solid var(--neutral-300);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   font-size: 1rem;
-  transition: border-color 0.2s ease;
+  transition: all 0.3s ease;
 }
 
 .formGroup input:focus,
 .formGroup textarea:focus {
   border-color: var(--primary-500);
   outline: none;
+  box-shadow: 0 0 0 3px var(--glow-primary);
 }
 
 .submitButton {
-  padding: 0.75rem 1rem;
-  background-color: var(--primary-500);
+  align-self: flex-start;
+  padding: 0.875rem 2rem;
+  background: linear-gradient(
+    to right, 
+    var(--primary-600), 
+    var(--primary-500)
+  );
   color: white;
   border: none;
-  border-radius: var(--radius-md);
-  font-size: 1rem;
+  border-radius: var(--radius-xl);
+  font-size: 1.1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-md);
 }
 
 .submitButton:hover {
-  background-color: var(--primary-600);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
 }
 
 .alternativeContact {
-  margin-top: 1rem;
+  margin-top: 2rem;
   text-align: center;
-  font-size: 0.95rem;
   color: var(--neutral-600);
 }
 
 .alternativeContact a {
-  color: var(--primary-500);
+  color: var(--primary-600);
   text-decoration: none;
-  transition: color 0.2s ease;
+  font-weight: 600;
+  transition: color 0.3s ease;
 }
 
 .alternativeContact a:hover {
-  color: var(--primary-600);
+  color: var(--primary-700);
 }
 
-/* Responsive Styles */
-@media (max-width: 768px) {
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
   .aboutContainer {
     padding: 3rem 1.5rem;
   }
 
-  .header h1 {
-    font-size: 2.25rem;
+  .descriptionContent {
+    flex-direction: column;
+    gap: 2rem;
   }
 
-  .description {
-    font-size: 1rem;
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .mainTitle {
+    font-size: 2.5rem;
   }
 
-  .contact h2 {
-    font-size: 1.5rem;
+  .subtitle {
+    font-size: 1.1rem;
+  }
+
+  .section {
+    padding: 2rem;
   }
 }
 
 @media (max-width: 480px) {
-  .aboutContainer {
-    padding: 2rem 1rem;
-  }
-
-  .header h1 {
+  .mainTitle {
     font-size: 2rem;
   }
 
-  .description {
-    font-size: 0.95rem;
-  }
-
-  .contact h2 {
-    font-size: 1.25rem;
-  }
-
   .submitButton {
-    font-size: 0.95rem;
-  }
-
-  .alternativeContact {
-    font-size: 0.85rem;
+    width: 100%;
   }
 }
