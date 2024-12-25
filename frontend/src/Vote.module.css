@@ -1,3 +1,4 @@
+/* Vote.module.css */
 .container {
   min-height: 100vh;
   width: 100%;
@@ -6,8 +7,7 @@
 .content {
   max-width: 64rem;
   margin: 0 auto;
-  padding-bottom: 10rem;
-  padding-top: 3rem;
+  padding: 3rem 1rem;
 }
 
 .title {
@@ -19,10 +19,127 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
   line-height: 1.2;
 }
 
+/* Enhanced ranking styles */
+.rankBadgeGold,
+.rankBadgeSilver,
+.rankBadgeBronze,
+.rankBadgeDefault {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+  font-weight: 600;
+}
+
+.rankBadgeGold {
+  background: #FFF7E6;
+}
+
+.rankBadgeSilver {
+  background: #F5F5F5;
+}
+
+.rankBadgeBronze {
+  background: #FFF1E6;
+}
+
+.rankBadgeDefault {
+  background: var(--neutral-100);
+  color: var(--neutral-600);
+}
+
+.rankIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.rankBadgeGold .rankIcon {
+  color: #FFB800;
+}
+
+.rankBadgeSilver .rankIcon {
+  color: #666666;
+}
+
+.rankBadgeBronze .rankIcon {
+  color: #FF8A65;
+}
+
+/* Major items with enhanced styling */
+.majorItem {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  user-select: none;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease;
+  border-left: 4px solid transparent;
+}
+
+.topThree1 {
+  border-left-color: #FFB800;
+}
+
+.topThree2 {
+  border-left-color: #666666;
+}
+
+.topThree3 {
+  border-left-color: #FF8A65;
+}
+
+.majorItem:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.majorItem.dragging {
+  opacity: 0.5;
+  box-shadow: var(--shadow-lg);
+}
+
+.majorName {
+  flex: 1;
+  font-weight: 500;
+  color: var(--neutral-900);
+}
+
+.dragIcon {
+  color: var(--neutral-400);
+  font-size: 1.25rem;
+  cursor: grab;
+}
+
+/* Confetti styles */
+.confettiContainer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+}
+
+.confettiParticle {
+  position: absolute;
+  transform-origin: center;
+  animation: confettiFall 2s linear forwards;
+}
+
+@keyframes confettiFall {
+  to {
+    transform: translateY(100vh) rotate(1440deg);
+  }
+}
+
+/* Card and Drag Area Styles */
 .card {
   background: white;
   border-radius: var(--radius-xl);
@@ -55,47 +172,7 @@
   gap: 0.75rem;
 }
 
-.majorItem {
-  background: white;
-  border-radius: var(--radius-md);
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  cursor: grab;
-  user-select: none;
-  box-shadow: var(--shadow-sm);
-  transition: all 0.2s ease;
-}
-
-.majorItem:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.majorNumber {
-  background: var(--primary-100);
-  color: var(--primary-600);
-  width: 2rem;
-  height: 2rem;
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  margin-right: 1rem;
-}
-
-.majorName {
-  flex: 1;
-  font-weight: 500;
-  color: var(--neutral-900);
-}
-
-.dragIcon {
-  color: var(--neutral-400);
-  font-size: 1.25rem;
-}
-
+/* Decision Section Styles */
 .decisionSection {
   border-top: 1px solid var(--neutral-200);
   padding-top: 2rem;
@@ -122,7 +199,7 @@
   background: var(--neutral-50);
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .radioLabel:hover {
@@ -158,14 +235,7 @@
   transform: translate(-50%, -50%);
 }
 
-.error {
-  background: var(--error-50);
-  color: var(--error-700);
-  padding: 1rem;
-  border-radius: var(--radius-md);
-  margin-bottom: 1rem;
-}
-
+/* Submit Button Styles */
 .submitButton {
   width: 100%;
   padding: 1rem;
@@ -189,9 +259,45 @@
   cursor: not-allowed;
 }
 
+.submitting {
+  background: var(--primary-400);
+  cursor: wait;
+}
+
+/* Loading Spinner */
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.spinnerCircle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-dasharray: 60;
+  stroke-dashoffset: 45;
+  stroke-linecap: round;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive Adjustments */
 @media (max-width: 640px) {
-  .container {
-    padding: 1rem;
+  .content {
+    padding-bottom: 3rem;
+    padding-top: 1rem;
   }
 
   .title {

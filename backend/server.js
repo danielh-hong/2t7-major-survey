@@ -1,8 +1,7 @@
-// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const { Response } = require('./database');
+const { Response, MAJORS, Major } = require('./database');
 require('dotenv').config();
 
 const app = express();
@@ -12,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
-const dbName = 'engscisurvey'; // Specify your database name
+const dbName = 'engscisurvey'; 
 const mongoURI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.x6tcj.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
 mongoose.connect(mongoURI, {
@@ -22,10 +21,37 @@ mongoose.connect(mongoURI, {
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('Could not connect to MongoDB:', err));
 
+// Seed Majors if not exists
+const seedMajors = async () => {
+  try {
+    const existingMajors = await Major.find();
+    if (existingMajors.length === 0) {
+      const majorDescriptions = {
+        'Aerospace': 'Explore the frontiers of aerospace engineering and space technology.',
+        'Biomedical Systems': 'Apply engineering principles to medical and biological challenges.',
+        'Electrical & Computer': 'Design innovative electrical and computer systems.',
+        'Energy Systems': 'Develop sustainable and efficient energy solutions.',
+        'Machine Intelligence': 'Create intelligent systems and advanced machine learning technologies.',
+        'Mathematics, Statistics & Finance': 'Apply mathematical and statistical methods to complex financial challenges.',
+        'Engineering Physics': 'Investigate fundamental physical principles and their engineering applications.',
+        'Robotics': 'Design and develop cutting-edge robotic systems and intelligent machines.'
+      };
+
+      const majorsToCreate = MAJORS.map(name => ({
+        name,
+        description: majorDescriptions[name]
+      }));
+
+      await Major.create(majorsToCreate);
+      console.log('Majors seeded successfully');
+    }
+  } catch (error) {
+    console.error('Error seeding majors:', error);
+  }
+};
+
 // Initialize Router
 const router = express.Router();
-
-// Routes
 
 /**
  * @route   POST /api/survey/submit
@@ -37,8 +63,23 @@ router.post('/submit', async (req, res) => {
     const { hasDecided, confirmedMajor, preferences } = req.body;
 
     // Validate preferences
-    if (hasDecided === false && (!preferences || preferences.length !== 3)) {
-      return res.status(400).json({ error: 'You must select exactly 3 preferences.' });
+    if (!hasDecided) {
+      if (!preferences || 
+          !preferences.firstChoice || 
+          !preferences.secondChoice || 
+          !preferences.thirdChoice) {
+        return res.status(400).json({ error: 'You must select top 3 preferences.' });
+      }
+
+      // Ensure top 3 choices are different
+      const choices = [
+        preferences.firstChoice, 
+        preferences.secondChoice, 
+        preferences.thirdChoice
+      ];
+      if (new Set(choices).size !== choices.length) {
+        return res.status(400).json({ error: 'Top 3 choices must be different.' });
+      }
     }
 
     if (hasDecided && !confirmedMajor) {
@@ -48,13 +89,27 @@ router.post('/submit', async (req, res) => {
     const newResponse = new Response({
       hasDecided,
       confirmedMajor: hasDecided ? confirmedMajor : undefined,
-      preferences: hasDecided ? undefined : preferences
+      preferences: !hasDecided ? preferences : undefined
     });
 
     await newResponse.save();
     res.status(201).json({ message: 'Survey response submitted successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+});
+
+/**
+ * @route   GET /api/survey/majors
+ * @desc    Get list of available majors with descriptions
+ * @access  Public
+ */
+router.get('/majors', async (req, res) => {
+  try {
+    const majors = await Major.find({}, 'name description');
+    res.json(majors);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -92,6 +147,13 @@ router.get('/stats', async (req, res) => {
       { $sort: { count: -1 } }
     ]);
 
+    // Aggregate confirmed majors
+    const confirmedMajorStats = await Response.aggregate([
+      { $match: { hasDecided: true } },
+      { $group: { _id: '$confirmedMajor', count: { $sum: 1 } } },
+      { $sort: { count: -1 } }
+    ]);
+
     // Get all individual responses
     const responses = await Response.find({}, {
       'preferences': 1,
@@ -107,6 +169,7 @@ router.get('/stats', async (req, res) => {
       firstChoiceStats,
       secondChoiceStats,
       thirdChoiceStats,
+      confirmedMajorStats,
       responses
     });
   } catch (error) {
@@ -117,6 +180,9 @@ router.get('/stats', async (req, res) => {
 // Mount the router on /api/survey
 app.use('/api/survey', router);
 
+// Seed majors on startup
+seedMajors();
+
 // Fallback Route for Undefined Paths
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
@@ -126,4 +192,19 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log(`Connected to database: ${dbName}`);
 });
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  try {
+    await mongoose.connection.close();
+    console.log('MongoDB connection closed');
+    process.exit(0);
+  } catch (error) {
+    console.error('Error during shutdown:', error);
+    process.exit(1);
+  }
+});
+
+module.exports = app;

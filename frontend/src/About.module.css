@@ -1,0 +1,157 @@
+/* src/About.module.css */
+
+.aboutContainer {
+  min-height: 100vh;
+  padding: 4rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary-700);
+}
+
+.description {
+  max-width: 800px;
+  width: 100%;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--neutral-700);
+  margin-bottom: 3rem;
+}
+
+.description p {
+  margin-bottom: 1.5rem;
+}
+
+.contact {
+  max-width: 600px;
+  width: 100%;
+}
+
+.contact h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--neutral-800);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.contactForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--neutral-600);
+}
+
+.formGroup input,
+.formGroup textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--neutral-300);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.formGroup input:focus,
+.formGroup textarea:focus {
+  border-color: var(--primary-500);
+  outline: none;
+}
+
+.submitButton {
+  padding: 0.75rem 1rem;
+  background-color: var(--primary-500);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submitButton:hover {
+  background-color: var(--primary-600);
+  transform: translateY(-2px);
+}
+
+.alternativeContact {
+  margin-top: 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+  color: var(--neutral-600);
+}
+
+.alternativeContact a {
+  color: var(--primary-500);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.alternativeContact a:hover {
+  color: var(--primary-600);
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .aboutContainer {
+    padding: 3rem 1.5rem;
+  }
+
+  .header h1 {
+    font-size: 2.25rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .contact h2 {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .aboutContainer {
+    padding: 2rem 1rem;
+  }
+
+  .header h1 {
+    font-size: 2rem;
+  }
+
+  .description {
+    font-size: 0.95rem;
+  }
+
+  .contact h2 {
+    font-size: 1.25rem;
+  }
+
+  .submitButton {
+    font-size: 0.95rem;
+  }
+
+  .alternativeContact {
+    font-size: 0.85rem;
+  }
+}

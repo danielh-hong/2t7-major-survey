@@ -61,11 +61,37 @@ responseSchema.pre('save', function(next) {
   next();
 });
 
+// Predefined list of majors
+const MAJORS = [
+  'Aerospace',
+  'Biomedical Systems',
+  'Electrical & Computer',
+  'Energy Systems',
+  'Machine Intelligence',
+  'Mathematics, Statistics & Finance',
+  'Engineering Physics',
+  'Robotics'
+];
+
+// Method to validate major names
+const validateMajor = (major) => {
+  return MAJORS.includes(major);
+};
+
+// Add major name validation to the schema
+responseSchema.path('preferences.firstChoice').validate(validateMajor, 'Invalid first choice major');
+responseSchema.path('preferences.secondChoice').validate(validateMajor, 'Invalid second choice major');
+responseSchema.path('preferences.thirdChoice').validate(validateMajor, 'Invalid third choice major');
+responseSchema.path('confirmedMajor').validate(function(value) {
+  return !this.hasDecided || validateMajor(value);
+}, 'Invalid confirmed major');
+
 // Create models
 const Major = mongoose.model('Major', majorSchema);
 const Response = mongoose.model('Response', responseSchema);
 
 module.exports = {
   Major,
-  Response
+  Response,
+  MAJORS
 };

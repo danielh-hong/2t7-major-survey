@@ -41,7 +41,7 @@ const Clock = () => {
         <h2 className={styles.clockTitle}>Time Until Major Selection</h2>
         <div className={styles.tooltipContainer}>
           <Info className={styles.infoIcon} size={18} />
-          <div className={`${styles.tooltip} glass`}>
+          <div className={`${styles.tooltip}`}>
             Approximate countdown to major selection period (Feb 14-18, 2024). 
             Official dates to be confirmed by the Division.
           </div>

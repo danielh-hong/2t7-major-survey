@@ -11,7 +11,7 @@ const MAJORS = [
   'Energy Systems',
   'Machine Intelligence',
   'Mathematics, Statistics & Finance',
-  'Physics',
+  'Engineering Physics',
   'Robotics'
 ];
 
