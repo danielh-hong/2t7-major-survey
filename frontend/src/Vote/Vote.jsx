@@ -1,12 +1,11 @@
-// Vote.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { GripVertical, Trophy, Medal, Check } from 'lucide-react';
 import Confetti from './Confetti';
 import Clock from './Clock';
-import Notification from './Notification';
+import Notification from '../Notification';
 import styles from './Vote.module.css';
 
 const MAJORS = [
@@ -20,6 +19,7 @@ const MAJORS = [
   'Robotics'
 ];
 
+// DraggableItem component remains the same...
 const DraggableItem = ({ id, index, text, moveItem }) => {
   const [{ isDragging }, drag, dragPreview] = useDrag({
     type: 'major',
@@ -40,38 +40,15 @@ const DraggableItem = ({ id, index, text, moveItem }) => {
   });
 
   const getRankingElement = (index) => {
-    if (index === 0) {
-      return (
-        <div className={styles.rankBadgeGold}>
-          <Trophy className={styles.rankIcon} />
-        </div>
-      );
-    } else if (index === 1) {
-      return (
-        <div className={styles.rankBadgeSilver}>
-          <Medal className={styles.rankIcon} />
-        </div>
-      );
-    } else if (index === 2) {
-      return (
-        <div className={styles.rankBadgeBronze}>
-          <Medal className={styles.rankIcon} />
-        </div>
-      );
-    }
-    return (
-      <div className={styles.rankBadgeDefault}>
-        {index + 1}
-      </div>
-    );
+    if (index === 0) return <div className={styles.rankBadgeGold}><Trophy className={styles.rankIcon} /></div>;
+    if (index === 1) return <div className={styles.rankBadgeSilver}><Medal className={styles.rankIcon} /></div>;
+    if (index === 2) return <div className={styles.rankBadgeBronze}><Medal className={styles.rankIcon} /></div>;
+    return <div className={styles.rankBadgeDefault}>{index + 1}</div>;
   };
 
   return (
     <div ref={dragPreview} style={{ opacity: isDragging ? 0.5 : 1 }}>
-      <div
-        ref={(node) => drag(drop(node))}
-        className={`${styles.majorItem} ${isDragging ? styles.dragging : ''}`}
-      >
+      <div ref={(node) => drag(drop(node))} className={`${styles.majorItem} ${isDragging ? styles.dragging : ''}`}>
         {getRankingElement(index)}
         <span className={styles.majorName}>{text}</span>
         <GripVertical className={styles.dragIcon} />
@@ -80,21 +57,20 @@ const DraggableItem = ({ id, index, text, moveItem }) => {
   );
 };
 
-const Vote = () => {
+const Vote = ({ onSuccessfulVote }) => {
   const navigate = useNavigate();
   const [majors, setMajors] = useState(MAJORS);
   const [hasDecided, setHasDecided] = useState(null);
   const [confirmedMajor, setConfirmedMajor] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [error, setError] = useState(null);
   const [notification, setNotification] = useState({
     isVisible: false,
     message: '',
-    type: 'success', // 'success', 'error', 'info'
+    type: 'success'
   });
 
-  const BASE_URL = import.meta.env.VITE_DEPLOYED_BACKEND_API_URL; // Dynamically set backend URL
+  const BASE_URL = import.meta.env.VITE_DEPLOYED_BACKEND_API_URL;
 
   const moveItem = (fromIndex, toIndex) => {
     const updatedMajors = [...majors];
@@ -103,10 +79,29 @@ const Vote = () => {
     setMajors(updatedMajors);
   };
 
-  // Update the handleSubmit function in Vote.jsx
   const handleSubmit = async () => {
     if (isSubmitting) return;
-  
+
+    // Check if already voted first
+    if (localStorage.getItem('has_voted')) {
+      setNotification({
+        isVisible: true,
+        message: 'You have already submitted your vote. Only one vote per person is allowed.',
+        type: 'error'
+      });
+      return;
+    }
+
+    // Validate form data
+    if (!hasDecided || (hasDecided === 'no' && majors.length < 3) || (hasDecided === 'yes' && !confirmedMajor)) {
+      setNotification({
+        isVisible: true,
+        message: 'Please complete all required fields before submitting.',
+        type: 'error'
+      });
+      return;
+    }
+
     const data = {
       hasDecided: hasDecided === 'yes',
       preferences: {
@@ -115,11 +110,11 @@ const Vote = () => {
         thirdChoice: majors[2]
       }
     };
-  
+
+    // Check if decided but confirmed major doesn't match first choice
     if (hasDecided === 'yes') {
       data.confirmedMajor = confirmedMajor;
       
-      // Validate confirmed major matches first choice
       if (confirmedMajor !== majors[0]) {
         setNotification({
           isVisible: true,
@@ -129,7 +124,7 @@ const Vote = () => {
         return;
       }
     }
-  
+
     try {
       setIsSubmitting(true);
       const response = await fetch(`${BASE_URL}/api/survey/submit`, {
@@ -144,21 +139,18 @@ const Vote = () => {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to submit survey');
       }
-  
-      // Clear form data immediately after successful submission
-      setMajors(MAJORS);
-      setHasDecided(null);
-      setConfirmedMajor('');
-      
+
+      localStorage.setItem('has_voted', 'true');
+      if (onSuccessfulVote) {
+        onSuccessfulVote();
+      }
+
       setNotification({
         isVisible: true,
         message: 'Survey submitted successfully!',
         type: 'success'
       });
       setShowConfetti(true);
-      
-      // Disable all inputs by setting submitting state
-      setIsSubmitting(true);
       
       setTimeout(() => {
         setShowConfetti(false);
@@ -173,7 +165,7 @@ const Vote = () => {
       });
     }
   };
-  
+
   const handleNotificationClose = () => {
     setNotification({
       ...notification,
@@ -181,13 +173,8 @@ const Vote = () => {
     });
   };
 
-  const isValid = hasDecided !== null && 
-    ((hasDecided === 'no' && majors.length >= 3) ||
-     (hasDecided === 'yes' && confirmedMajor));
-
   return (
     <div className={styles.container}>
-      {/* Notification */}
       {notification.isVisible && (
         <Notification
           message={notification.message}
@@ -197,26 +184,18 @@ const Vote = () => {
         />
       )}
 
-      {/* Confetti Overlay */}
       {showConfetti && (
         <div className={styles.confettiOverlay}>
           <Confetti active={showConfetti} duration={3500} />
         </div>
       )}
       
-      {/* Main Content */}
       <div className={styles.content}>
-        <h1 className={styles.title}>
-          2T7 EngSci Major Selection Survey
-        </h1>
-
+        <h1 className={styles.title}>2T7 EngSci Major Selection Survey</h1>
         <Clock />
-
         <div className={styles.card}>
           <div className={styles.dragArea}>
-            <h2 className={styles.dragTitle}>
-              Rank Your Preferences
-            </h2>
+            <h2 className={styles.dragTitle}>Rank Your Preferences</h2>
             <p className={styles.dragSubtitle}>
               Drag and rank the majors in your order of preference. Your top 3 choices will be recorded. (Press and hold to drag on mobile).
             </p>
@@ -237,9 +216,7 @@ const Vote = () => {
           </div>
 
           <div className={styles.decisionSection}>
-            <h2 className={styles.decisionTitle}>
-              Have you decided on your major?
-            </h2>
+            <h2 className={styles.decisionTitle}>Have you decided on your major?</h2>
             
             <div className={styles.decisionGroup}>
               <label className={`${styles.radioCard} ${hasDecided === 'yes' ? styles.selected : ''}`}>
@@ -276,35 +253,25 @@ const Vote = () => {
                     <button
                       key={major}
                       onClick={() => setConfirmedMajor(major)}
-                      className={`${styles.majorOption} ${
-                        confirmedMajor === major ? styles.selected : ''
-                      }`}
+                      className={`${styles.majorOption} ${confirmedMajor === major ? styles.selected : ''}`}
                     >
                       <span className={styles.majorOptionText}>{major}</span>
-                      {confirmedMajor === major && (
-                        <Check className="text-primary-500" />
-                      )}
+                      {confirmedMajor === major && <Check className="text-primary-500" />}
                     </button>
                   ))}
                 </div>
               </div>
             )}
 
-            
             <button 
               className={`${styles.submitButton} ${isSubmitting ? styles.submitting : ''}`}
               onClick={handleSubmit}
-              disabled={!isValid || isSubmitting}
+              disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <span className={styles.loadingSpinner}>
                   <svg className={styles.spinner} viewBox="0 0 50 50">
-                    <circle 
-                      className={styles.spinnerCircle}
-                      cx="25" 
-                      cy="25" 
-                      r="20" 
-                    />
+                    <circle className={styles.spinnerCircle} cx="25" cy="25" r="20" />
                   </svg>
                   Submitting...
                 </span>

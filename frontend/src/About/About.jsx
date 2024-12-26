@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styles from './About.module.css';
-import Notification from './Notification';
+import Notification from '../Notification';
+import StatsSection from './StatsSection';
 
 const About = () => {
   const [formData, setFormData] = useState({
@@ -115,6 +116,10 @@ const About = () => {
         <p className={styles.subtitle}>An Anonymous Survey Made by a Fellow 2t7 :)</p>
       </div>
 
+      <div className={`${styles.statsSection}`}>
+        <StatsSection />
+      </div>
+
       <div className={`${styles.section} ${styles.descriptionSection}`}>
         <div className={styles.descriptionContent}>
           <div className={styles.descriptionBlock}>
@@ -133,7 +138,7 @@ const About = () => {
               This site is not affiliated with the University 
               of Toronto and collects absolutely no personally identifiable information. 
               Your vote remains completely anonymous. The only information collected 
-              is your choice of major; nothing else!
+              is your choice of major; nothing else! NOTE that cookies are used to prevent multiple votes.
             </p>
           </div>
         </div>

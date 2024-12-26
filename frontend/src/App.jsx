@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import VoteWrapper from './VoteWrapper';  // Import VoteWrapper instead of Vote
+import VoteWrapper from './Vote/VoteWrapper';  // Import VoteWrapper instead of Vote
 import Results from './Results/Results';
-import About from './About';
+import About from './About/About';
 import Navbar from './Navbar';
 import AnimatedBackground from './AnimatedBackground';
 import './App.css';

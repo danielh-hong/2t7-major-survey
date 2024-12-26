@@ -94,12 +94,27 @@ responseSchema.path('confirmedMajor').validate(function(value) {
   return !this.hasDecided || validateMajor(value);
 }, 'Invalid confirmed major');
 
+
+const visitSchema = new mongoose.Schema({
+  count: {
+    type: Number,
+    default: 0
+  },
+  lastReset: {
+    type: Date,
+    default: Date.now
+  }
+});
+
 // Create models
+const Visit = mongoose.model('Visit', visitSchema);
 const Major = mongoose.model('Major', majorSchema);
 const Response = mongoose.model('Response', responseSchema);
 
 module.exports = {
   Major,
   Response,
+  Visit,
   MAJORS
 };
+

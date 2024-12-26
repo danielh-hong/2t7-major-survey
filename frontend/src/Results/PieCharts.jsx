@@ -20,7 +20,7 @@ const PieCharts = ({ data }) => {
       }
     };
 
-    handleResize(); // Initial call
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -32,13 +32,25 @@ const PieCharts = ({ data }) => {
   ];
 
   const formatData = (choiceType) => {
-    return data
+    // Get data for this choice and filter out zeros
+    let choiceData = data
       .map((major) => ({
         name: major.name,
         value: major[choiceType] || 0
       }))
       .filter(item => item.value > 0)
       .sort((a, b) => b.value - a.value);
+
+    // Calculate total for this choice
+    const total = choiceData.reduce((sum, item) => sum + item.value, 0);
+    
+    // Add total to each item for percentage calculation
+    choiceData = choiceData.map(item => ({
+      ...item,
+      total
+    }));
+
+    return choiceData;
   };
 
   const CustomTooltip = ({ active, payload }) => {
@@ -95,6 +107,7 @@ const PieCharts = ({ data }) => {
                     verticalAlign="bottom"
                     formatter={(value, entry) => {
                       const item = chartData.find(d => d.name === value);
+                      if (!item) return value;
                       const percentage = ((item.value / total) * 100).toFixed(1);
                       return `${value.length > 15 ? value.substring(0, 15) + '...' : value} (${percentage}%)`;
                     }}

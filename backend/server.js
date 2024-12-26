@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const { Response, MAJORS, Major } = require('./database');
+const { Response, MAJORS, Major, Visit } = require('./database');
 require('dotenv').config();
 
 const app = express();
@@ -22,12 +22,51 @@ app.options('*', cors());
 const dbName = 'engscisurvey'; 
 const mongoURI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.x6tcj.mongodb.net/${dbName}?retryWrites=true&w=majority`;
 
+// has to be before mongoose connnection
+const initializeVisitCounter = async () => {
+  try {
+    let visitCounter = await Visit.findOne();
+    if (!visitCounter) {
+      visitCounter = new Visit();
+      await visitCounter.save();
+    }
+    return visitCounter;
+  } catch (error) {
+    console.error('Error initializing visit counter:', error);
+  }
+};
+
 mongoose.connect(mongoURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-  .then(() => console.log('Connected to MongoDB'))
+  .then(() => {
+    console.log('Connected to MongoDB');
+    return initializeVisitCounter();
+  })
+  .then(() => {
+    console.log('Visit counter initialized');
+  })
   .catch(err => console.error('Could not connect to MongoDB:', err));
+
+// Initialize Router
+const router = express.Router();
+
+// route 4 incrementing visits
+router.post('/visit', async (req, res) => {
+  try {
+    const visitCounter = await Visit.findOneAndUpdate(
+      {},
+      { $inc: { count: 1 } },
+      { new: true, upsert: true }
+    );
+    res.json({ visits: visitCounter.count });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+  
+
 
 // Seed Majors if not exists
 const seedMajors = async () => {
@@ -58,8 +97,6 @@ const seedMajors = async () => {
   }
 };
 
-// Initialize Router
-const router = express.Router();
 
 /**
  * @route   POST /api/survey/submit
@@ -118,54 +155,91 @@ router.get('/majors', async (req, res) => {
  * @desc    Get aggregated survey statistics
  * @access  Public
  */
+// Modify the existing stats endpoint
 router.get('/stats', async (req, res) => {
   try {
     const totalResponses = await Response.countDocuments();
+    const visitCounter = await Visit.findOne();
+    const totalVisits = visitCounter ? visitCounter.count : 0;
 
     // Count decided vs undecided
     const decidedCount = await Response.countDocuments({ hasDecided: true });
     const undecidedCount = totalResponses - decidedCount;
 
-    // Aggregate first choice preferences
+    // Aggregate first choice preferences - including both decided and undecided
     const firstChoiceStats = await Response.aggregate([
-      { $match: { hasDecided: false } },
-      { $group: { _id: '$preferences.firstChoice', count: { $sum: 1 } } },
+      {
+        $facet: {
+          // Get counts from undecided responses
+          undecided: [
+            { $match: { hasDecided: false } },
+            { $group: { _id: '$preferences.firstChoice', count: { $sum: 1 } } }
+          ],
+          // Get counts from decided responses (using confirmedMajor)
+          decided: [
+            { $match: { hasDecided: true } },
+            { $group: { _id: '$confirmedMajor', count: { $sum: 1 } } }
+          ]
+        }
+      },
+      // Unwind both arrays
+      { $project: {
+          combined: {
+            $concatArrays: ['$undecided', '$decided']
+          }
+      }},
+      { $unwind: '$combined' },
+      // Group by major to combine counts
+      {
+        $group: {
+          _id: '$combined._id',
+          count: { $sum: '$combined.count' }
+        }
+      },
       { $sort: { count: -1 } }
     ]);
 
     // Aggregate second choice preferences
     const secondChoiceStats = await Response.aggregate([
-      { $match: { hasDecided: false } },
-      { $group: { _id: '$preferences.secondChoice', count: { $sum: 1 } } },
+      {
+        $group: {
+          _id: '$preferences.secondChoice',
+          count: { $sum: 1 }
+        }
+      },
       { $sort: { count: -1 } }
     ]);
 
     // Aggregate third choice preferences
     const thirdChoiceStats = await Response.aggregate([
-      { $match: { hasDecided: false } },
-      { $group: { _id: '$preferences.thirdChoice', count: { $sum: 1 } } },
+      {
+        $group: {
+          _id: '$preferences.thirdChoice',
+          count: { $sum: 1 }
+        }
+      },
       { $sort: { count: -1 } }
     ]);
 
-    // Aggregate confirmed majors
+    // Get confirmed major stats (for decided students)
     const confirmedMajorStats = await Response.aggregate([
       { $match: { hasDecided: true } },
       { $group: { _id: '$confirmedMajor', count: { $sum: 1 } } },
       { $sort: { count: -1 } }
     ]);
 
-    // In your stats endpoint
+    // Get all responses with submission time
     const responses = await Response.find({}, {
       'preferences': 1,
       'hasDecided': 1,
       'confirmedMajor': 1,
-      'submittedAt': 1,  // Add this line
+      'submittedAt': 1,
       '_id': 0
-    }).sort({ submittedAt: -1 }); // Most recent first
-
+    }).sort({ submittedAt: -1 });
 
     res.json({
       totalResponses,
+      totalVisits,
       decidedCount,
       undecidedCount,
       firstChoiceStats,

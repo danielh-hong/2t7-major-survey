@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import Vote from './Vote';
+import Notification from '../Notification';
 
 const COOKIE_NAME = 'has_voted_2t7';
-const COOKIE_EXPIRY_DAYS = 365; // Cookie will last for a year
+const COOKIE_EXPIRY_DAYS = 365;
 
 const setCookie = (name, value, days) => {
   const date = new Date();
@@ -20,18 +20,34 @@ const getCookie = (name) => {
 };
 
 const VoteWrapper = () => {
-  const [hasVoted, setHasVoted] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [notification, setNotification] = useState({
+    isVisible: false,
+    message: '',
+    type: 'error'
+  });
 
   useEffect(() => {
     const voteCookie = getCookie(COOKIE_NAME);
-    setHasVoted(voteCookie === 'true');
+    if (voteCookie === 'true') {
+      setNotification({
+        isVisible: true,
+        message: 'You have already submitted your vote. Only one vote per person is allowed.',
+        type: 'error'
+      });
+    }
     setLoading(false);
   }, []);
 
   const handleSuccessfulVote = () => {
     setCookie(COOKIE_NAME, true, COOKIE_EXPIRY_DAYS);
-    setHasVoted(true);
+  };
+
+  const handleNotificationClose = () => {
+    setNotification({
+      ...notification,
+      isVisible: false
+    });
   };
 
   if (loading) {
@@ -42,11 +58,19 @@ const VoteWrapper = () => {
     );
   }
 
-  if (hasVoted) {
-    return <Navigate to="/results" replace />;
-  }
-
-  return <Vote onSuccessfulVote={handleSuccessfulVote} />;
+  return (
+    <>
+      {notification.isVisible && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          duration={5000}
+          onClose={handleNotificationClose}
+        />
+      )}
+      <Vote onSuccessfulVote={handleSuccessfulVote} />
+    </>
+  );
 };
 
 export default VoteWrapper;
