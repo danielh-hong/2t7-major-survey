@@ -34,7 +34,7 @@ const Results = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const BASE_URL = import.meta.env.VITE_BACKEND_API_URL; // Dynamically set backend URL
+  const BASE_URL = import.meta.env.VITE_DEPLOYED_BACKEND_API_URL; // Dynamically set backend URL
 
   useEffect(() => {
     fetchData();

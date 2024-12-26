@@ -94,7 +94,7 @@ const Vote = () => {
     type: 'success', // 'success', 'error', 'info'
   });
 
-  const BASE_URL = import.meta.env.VITE_BACKEND_API_URL; // Dynamically set backend URL
+  const BASE_URL = import.meta.env.VITE_DEPLOYED_BACKEND_API_URL; // Dynamically set backend URL
 
   const moveItem = (fromIndex, toIndex) => {
     const updatedMajors = [...majors];
