@@ -70,6 +70,7 @@ const Results = () => {
     return formattedData;
   };
 
+
   if (loading) {
     return (
       <div className={styles.loadingContainer}>

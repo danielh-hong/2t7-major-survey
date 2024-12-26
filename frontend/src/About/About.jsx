@@ -113,7 +113,7 @@ const About = () => {
     <div className={styles.aboutContainer}>
       <div className={`${styles.section} ${styles.headerSection}`}>
         <h1 className={styles.mainTitle}>2T7 Engineering Sciences Major Survey</h1>
-        <p className={styles.subtitle}>An Anonymous Survey Made by a Fellow 2t7 :)</p>
+        <p className={styles.subtitle}>2t7 Discipline Survey for and by a Fellow 2t7 :)</p>
       </div>
 
       <div className={`${styles.statsSection}`}>
@@ -137,8 +137,8 @@ const About = () => {
             <p>
               This site is not affiliated with the University 
               of Toronto and collects absolutely no personally identifiable information. 
-              Your vote remains completely anonymous. The only information collected 
-              is your choice of major; nothing else! NOTE that cookies are used to prevent multiple votes.
+              Your vote remains completely anonymous if you choose for it to be. The only information collected 
+              is what you provide; nothing else! NOTE that cookies are used to prevent multiple votes.
             </p>
           </div>
         </div>

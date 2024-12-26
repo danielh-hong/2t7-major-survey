@@ -78,6 +78,22 @@ const FilteredChoices = ({ data }) => {
     </div>
   );
 
+  const renderNameCell = (name) => {
+    if (!name) return <td>-</td>;
+    
+    if (name.length > 15) {
+      return (
+        <td>
+          <div className={styles.nameCell} title={name}>
+            {name}
+          </div>
+        </td>
+      );
+    }
+    
+    return <td>{name}</td>;
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.controls}>
@@ -170,9 +186,7 @@ const FilteredChoices = ({ data }) => {
           <tbody>
             {filteredData.map((response, index) => (
               <tr key={index}>
-                {activeFilters.includes('name') && (
-                  <td>{response.name || '-'}</td>
-                )}
+                {activeFilters.includes('name') && renderNameCell(response.name)}
                 {activeFilters.includes('first') && (
                   <td>{response.preferences?.firstChoice}</td>
                 )}

@@ -236,6 +236,19 @@
   }
 }
 
+.nameCell {
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: help;
+  position: relative;
+}
+
+.nameCell:hover {
+  color: var(--primary-600);
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .chartSection {
