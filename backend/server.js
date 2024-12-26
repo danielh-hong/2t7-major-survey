@@ -8,11 +8,14 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://2t7-major-survey.vercel.app', ], // local development and production
-  methods: ['GET', 'POST'],
-  credentials: true // Allow credentials (cookies, authorization headers, etc.) to be included in requests
+  origin: ['http://localhost:5173', 'https://2t7-major-survey.vercel.app'], // Add all allowed origins here
+  methods: ['GET', 'POST', 'OPTIONS'], // Include OPTIONS method
+  credentials: true // Allow credentials (e.g., cookies, authorization headers)
 }));
-app.use(express.json());
+
+// Add fallback for preflight response
+app.options('*', cors());
+
 
 // MongoDB Connection
 const dbName = 'engscisurvey'; 
