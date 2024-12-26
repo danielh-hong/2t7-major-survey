@@ -8,8 +8,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173'], // local development for now
-  // 'https://your-frontend-domain.com'  // Add later the frontend domain
+  origin: ['http://localhost:5173', 'https://2t7-major-survey.vercel.app'], // local development and production
   methods: ['GET', 'POST'],
   credentials: true // Allow credentials (cookies, authorization headers, etc.) to be included in requests
 }));
