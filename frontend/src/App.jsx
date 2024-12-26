@@ -2,9 +2,9 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Vote from './Vote';
+import VoteWrapper from './VoteWrapper';  // Import VoteWrapper instead of Vote
 import Results from './Results/Results';
-import About from './About'; // Import the About component
+import About from './About';
 import Navbar from './Navbar';
 import AnimatedBackground from './AnimatedBackground';
 import './App.css';
@@ -21,10 +21,9 @@ const App = () => {
           <main>
             <Routes>
               <Route path="/" element={<Navigate to="/vote" replace />} />
-              <Route path="/vote" element={<Vote />} />
+              <Route path="/vote" element={<VoteWrapper />} /> {/* Use VoteWrapper instead of Vote */}
               <Route path="/results" element={<Results />} />
-              <Route path="/about" element={<About />} /> {/* New About Route */}
-              {/* Fallback route for undefined paths */}
+              <Route path="/about" element={<About />} />
               <Route path="*" element={<h1>404: Page Not Found</h1>} />
             </Routes>
           </main>

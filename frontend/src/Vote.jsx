@@ -6,7 +6,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { GripVertical, Trophy, Medal, Check } from 'lucide-react';
 import Confetti from './Confetti';
 import Clock from './Clock';
-import Notification from './Notification'; // Import Notification
+import Notification from './Notification';
 import styles from './Vote.module.css';
 
 const MAJORS = [
