@@ -7,6 +7,7 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
+app.use(express.json()); // Add this line to parse JSON bodies
 app.use(cors({
   origin: ['http://localhost:5173', 'https://2t7-major-survey.vercel.app'], // Add all allowed origins here
   methods: ['GET', 'POST', 'OPTIONS'], // Include OPTIONS method

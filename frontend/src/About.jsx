@@ -112,7 +112,7 @@ const About = () => {
     <div className={styles.aboutContainer}>
       <div className={`${styles.section} ${styles.headerSection}`}>
         <h1 className={styles.mainTitle}>2T7 Engineering Sciences Major Survey</h1>
-        <p className={styles.subtitle}>A Completely Anonymous Survey Made by a Fellow 2t7</p>
+        <p className={styles.subtitle}>An Anonymous Survey Made by a Fellow 2t7 :)</p>
       </div>
 
       <div className={`${styles.section} ${styles.descriptionSection}`}>
@@ -120,9 +120,9 @@ const About = () => {
           <div className={styles.descriptionBlock}>
             <h2 className={styles.sectionTitle}>Our Mission</h2>
             <p>
-              This platform was created to provide 2T7 Engineering Sciences students 
-              with a transparent view of major preferences. By anonymously sharing your 
-              choice, you help your peers make informed academic decisions. All information
+              This website was made to give us 2T7 Engineering Sciences students 
+              a view of what people's top choices are. Maybe it may even help some of you make
+              your decision. All information
               is publicly available and updated in real-time. Also, all that is asked is that you only vote once!
             </p>
           </div>
