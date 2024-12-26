@@ -12,11 +12,11 @@ const majorSchema = new mongoose.Schema({
   }
 });
 
+// database.js
 const responseSchema = new mongoose.Schema({
   hasDecided: {
     type: Boolean,
-    required: true,
-    default: false
+    required: true
   },
   confirmedMajor: {
     type: String,
@@ -37,25 +37,33 @@ const responseSchema = new mongoose.Schema({
       type: String,
       required: true
     }
+  },
+  submittedAt: {
+    type: Date,
+    default: Date.now  // This will automatically set the current time when a document is created
   }
 });
 
-// Add validation to ensure choices are different
+// Update validation to check confirmedMajor matches firstChoice
 responseSchema.pre('save', function(next) {
   const choices = [
-    this.preferences.firstChoice,
-    this.preferences.secondChoice,
-    this.preferences.thirdChoice
-  ];
+    this.preferences?.firstChoice,
+    this.preferences?.secondChoice,
+    this.preferences?.thirdChoice
+  ].filter(Boolean);
+  
+  if (choices.length !== 3) {
+    return next(new Error('Three preferences are required'));
+  }
   
   // Check for duplicates
   if (new Set(choices).size !== choices.length) {
-    next(new Error('First, second, and third choices must be different'));
+    return next(new Error('First, second, and third choices must be different'));
   }
-  
-  // If hasDecided is true, confirmedMajor must match firstChoice
+
+  // If decided, confirmedMajor must match firstChoice
   if (this.hasDecided && this.confirmedMajor !== this.preferences.firstChoice) {
-    next(new Error('Confirmed major must match first choice preference'));
+    return next(new Error('Your confirmed major must match your first choice'));
   }
   
   next();

@@ -58,41 +58,33 @@ const router = express.Router();
  * @desc    Submit a new survey response
  * @access  Public
  */
+// In your server.js or routes file
 router.post('/submit', async (req, res) => {
   try {
     const { hasDecided, confirmedMajor, preferences } = req.body;
 
-    // Validate preferences
-    if (!hasDecided) {
-      if (!preferences || 
-          !preferences.firstChoice || 
-          !preferences.secondChoice || 
-          !preferences.thirdChoice) {
-        return res.status(400).json({ error: 'You must select top 3 preferences.' });
-      }
+    if (!preferences || !preferences.firstChoice || !preferences.secondChoice || !preferences.thirdChoice) {
+      return res.status(400).json({ error: 'You must select top 3 preferences.' });
+    }
 
-      // Ensure top 3 choices are different
-      const choices = [
-        preferences.firstChoice, 
-        preferences.secondChoice, 
-        preferences.thirdChoice
-      ];
-      if (new Set(choices).size !== choices.length) {
-        return res.status(400).json({ error: 'Top 3 choices must be different.' });
+    // Verify choices are different
+    const choices = [preferences.firstChoice, preferences.secondChoice, preferences.thirdChoice];
+    if (new Set(choices).size !== choices.length) {
+      return res.status(400).json({ error: 'Top 3 choices must be different.' });
+    }
+
+    if (hasDecided) {
+      if (!confirmedMajor) {
+        return res.status(400).json({ error: 'Confirmed major is required if you have decided.' });
+      }
+      if (confirmedMajor !== preferences.firstChoice) {
+        return res.status(400).json({ error: 'Your confirmed major must match your first choice!' });
       }
     }
 
-    if (hasDecided && !confirmedMajor) {
-      return res.status(400).json({ error: 'Confirmed major is required if you have decided.' });
-    }
-
-    const newResponse = new Response({
-      hasDecided,
-      confirmedMajor: hasDecided ? confirmedMajor : undefined,
-      preferences: !hasDecided ? preferences : undefined
-    });
-
+    const newResponse = new Response({ hasDecided, confirmedMajor, preferences });
     await newResponse.save();
+    
     res.status(201).json({ message: 'Survey response submitted successfully' });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -154,13 +146,15 @@ router.get('/stats', async (req, res) => {
       { $sort: { count: -1 } }
     ]);
 
-    // Get all individual responses
+    // In your stats endpoint
     const responses = await Response.find({}, {
       'preferences': 1,
       'hasDecided': 1,
       'confirmedMajor': 1,
+      'submittedAt': 1,  // Add this line
       '_id': 0
     }).sort({ submittedAt: -1 }); // Most recent first
+
 
     res.json({
       totalResponses,

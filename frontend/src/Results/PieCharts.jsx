@@ -62,14 +62,14 @@ const PieCharts = ({ data }) => {
       {choices.map((choice) => {
         const chartData = formatData(choice.key);
         const total = chartData.reduce((sum, item) => sum + item.value, 0);
-        const chartHeight = legendPosition === 'bottom' ? 500 : 400;
+        const chartHeight = 400;
         
         return (
           <div key={choice.key} className={styles.pieChartCard}>
             <h3 className={styles.chartTitle}>{choice.name} Distribution</h3>
             <div className={styles.chartContainer}>
               <ResponsiveContainer width="100%" height={chartHeight}>
-                <PieChart>
+                <PieChart margin={{ top: 0, right: 0, bottom: 50, left: 0 }}>
                   <Pie
                     data={chartData}
                     dataKey="value"
@@ -93,11 +93,6 @@ const PieCharts = ({ data }) => {
                     layout="horizontal"
                     align="center"
                     verticalAlign="bottom"
-                    wrapperStyle={{
-                      position: 'relative',
-                      marginTop: '20px',
-                      width: '100%'
-                    }}
                     formatter={(value, entry) => {
                       const item = chartData.find(d => d.name === value);
                       const percentage = ((item.value / total) * 100).toFixed(1);

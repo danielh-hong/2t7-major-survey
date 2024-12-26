@@ -5,6 +5,7 @@ import styles from './FilteredChoices.module.css';
 const FilteredChoices = ({ data }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeFilters, setActiveFilters] = useState(['first', 'second', 'third']);
+  const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'decided', 'undecided'
   
   const filterOptions = [
     { id: 'first', label: 'First Choice' },
@@ -12,23 +13,37 @@ const FilteredChoices = ({ data }) => {
     { id: 'third', label: 'Third Choice' }
   ];
 
+  const statusOptions = [
+    { id: 'all', label: 'All Status' },
+    { id: 'decided', label: 'Decided' },
+    { id: 'undecided', label: 'Undecided' }
+  ];
+
   // Filter and search logic
   const filteredData = useMemo(() => {
     return data.responses?.filter(response => {
+      // Status filter
+      const statusMatch = 
+        statusFilter === 'all' || 
+        (statusFilter === 'decided' && response.hasDecided) ||
+        (statusFilter === 'undecided' && !response.hasDecided);
+
+      // Search filter
       const searchMatch = searchTerm.toLowerCase() === '' || 
-        Object.values(response.preferences).some(choice => 
-          choice.toLowerCase().includes(searchTerm.toLowerCase())
+        Object.values(response.preferences || {}).some(choice => 
+          choice?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
+      // Column filter
       const filterMatch = (
-        (activeFilters.includes('first') && response.preferences.firstChoice) ||
-        (activeFilters.includes('second') && response.preferences.secondChoice) ||
-        (activeFilters.includes('third') && response.preferences.thirdChoice)
+        (activeFilters.includes('first') && response.preferences?.firstChoice) ||
+        (activeFilters.includes('second') && response.preferences?.secondChoice) ||
+        (activeFilters.includes('third') && response.preferences?.thirdChoice)
       );
 
-      return searchMatch && filterMatch;
+      return statusMatch && searchMatch && filterMatch;
     }) || [];
-  }, [data.responses, searchTerm, activeFilters]);
+  }, [data.responses, searchTerm, activeFilters, statusFilter]);
 
   // Calculate stats for filtered data
   const stats = useMemo(() => ({
@@ -39,7 +54,6 @@ const FilteredChoices = ({ data }) => {
 
   const toggleFilter = (filterId) => {
     setActiveFilters(prev => {
-      // Prevent removing all filters
       if (prev.length === 1 && prev.includes(filterId)) {
         return prev;
       }
@@ -63,7 +77,6 @@ const FilteredChoices = ({ data }) => {
 
   return (
     <div className={styles.container}>
-      {/* Search and Filter Controls */}
       <div className={styles.controls}>
         <div className={styles.searchWrapper}>
           <Search className={styles.searchIcon} size={20} />
@@ -77,27 +90,48 @@ const FilteredChoices = ({ data }) => {
         </div>
 
         <div className={styles.filterSection}>
-          <div className={styles.filterLabel}>
-            <Filter size={20} />
-            <span>Filter by:</span>
+          <div className={styles.filterGroup}>
+            <div className={styles.filterLabel}>
+              <Filter size={20} />
+              <span>Columns:</span>
+            </div>
+            <div className={styles.filterButtons}>
+              {filterOptions.map(filter => (
+                <button
+                  key={filter.id}
+                  onClick={() => toggleFilter(filter.id)}
+                  className={`${styles.filterButton} ${
+                    activeFilters.includes(filter.id) ? styles.filterButtonActive : ''
+                  }`}
+                >
+                  {filter.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className={styles.filterButtons}>
-            {filterOptions.map(filter => (
-              <button
-                key={filter.id}
-                onClick={() => toggleFilter(filter.id)}
-                className={`${styles.filterButton} ${
-                  activeFilters.includes(filter.id) ? styles.filterButtonActive : ''
-                }`}
-              >
-                {filter.label}
-              </button>
-            ))}
+
+          <div className={styles.filterGroup}>
+            <div className={styles.filterLabel}>
+              <HelpCircle size={20} />
+              <span>Status:</span>
+            </div>
+            <div className={styles.filterButtons}>
+              {statusOptions.map(option => (
+                <button
+                  key={option.id}
+                  onClick={() => setStatusFilter(option.id)}
+                  className={`${styles.filterButton} ${
+                    statusFilter === option.id ? styles.filterButtonActive : ''
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Stats Grid */}
       <div className={styles.statsGrid}>
         <StatCard
           label="Filtered Responses"
@@ -119,7 +153,6 @@ const FilteredChoices = ({ data }) => {
         />
       </div>
 
-      {/* Results Table */}
       <div className={styles.tableWrapper}>
         <table className={styles.table}>
           <thead>
@@ -134,13 +167,13 @@ const FilteredChoices = ({ data }) => {
             {filteredData.map((response, index) => (
               <tr key={index}>
                 {activeFilters.includes('first') && (
-                  <td>{response.preferences.firstChoice}</td>
+                  <td>{response.preferences?.firstChoice}</td>
                 )}
                 {activeFilters.includes('second') && (
-                  <td>{response.preferences.secondChoice}</td>
+                  <td>{response.preferences?.secondChoice}</td>
                 )}
                 {activeFilters.includes('third') && (
-                  <td>{response.preferences.thirdChoice}</td>
+                  <td>{response.preferences?.thirdChoice}</td>
                 )}
                 <td>
                   <span className={`${styles.statusBadge} ${
@@ -155,7 +188,6 @@ const FilteredChoices = ({ data }) => {
         </table>
       </div>
 
-      {/* No Results Message */}
       {filteredData.length === 0 && (
         <div className={styles.noResults}>
           No results found for your search criteria

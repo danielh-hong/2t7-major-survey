@@ -28,7 +28,7 @@ const CombinedBarChart = ({ data }) => {
         <ResponsiveContainer width="100%" height={500}>
           <BarChart
             data={data}
-            margin={{ top: 20, right: 30, left: 20, bottom: 65 }}
+            margin={{ top: 35, right: 20, left: 20, bottom: 65 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis 
@@ -42,18 +42,24 @@ const CombinedBarChart = ({ data }) => {
             />
             <YAxis 
               tickFormatter={value => Math.round(value)}
+              width={45}
               label={{ 
                 value: 'Number of Students', 
                 angle: -90, 
                 position: 'insideLeft',
-                style: { textAnchor: 'middle' } 
+                style: { textAnchor: 'middle' },
+                offset: 0
               }}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend 
-              verticalAlign="top" 
-              height={36}
-              wrapperStyle={{ paddingBottom: '20px' }}
+              align="center"
+              verticalAlign="top"
+              wrapperStyle={{
+                paddingTop: '0px',
+                marginTop: '-35px',
+                marginBottom: '10px'
+              }}
             />
             <Bar 
               dataKey="first" 

@@ -1,4 +1,3 @@
-// IndividualBarCharts.jsx
 import React from 'react';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
@@ -32,10 +31,10 @@ const IndividualBarCharts = ({ data }) => {
         <div key={choice.key} className={styles.individualChartCard}>
           <h3 className={styles.chartTitle}>{choice.name} Distribution</h3>
           <div className={styles.chartContainer}>
-            <ResponsiveContainer width="100%" height={400} minWidth={300}>
+            <ResponsiveContainer width="100%" height={400}>
               <BarChart
                 data={data}
-                margin={{ top: 20, right: 30, left: 30, bottom: 70 }}
+                margin={{ top: 20, right: 20, left: 20, bottom: 70 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis 
@@ -45,14 +44,20 @@ const IndividualBarCharts = ({ data }) => {
                   textAnchor="end"
                   height={60}
                   tick={{ fontSize: 12 }}
-                  tickFormatter={value => {
-                    // Truncate long names
-                    return value.length > 15 ? value.substring(0, 15) + '...' : value;
-                  }}
+                  tickFormatter={value => 
+                    value.length > 15 ? value.substring(0, 15) + '...' : value
+                  }
                 />
                 <YAxis 
                   tickFormatter={value => Math.round(value)}
                   domain={[0, 'dataMax + 5']}
+                  width={45}
+                  label={{ 
+                    value: 'Number of Students',
+                    angle: -90,
+                    position: 'insideLeft',
+                    offset: 0
+                  }}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Bar 

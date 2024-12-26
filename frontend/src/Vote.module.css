@@ -106,23 +106,44 @@
 }
 
 .rankBadgeGold {
-  composes: rankBadge;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
   background: #FFF7E6;
 }
 
 .rankBadgeSilver {
-  composes: rankBadge;
-  background: #F5F5F5;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;  background: #F5F5F5;
 }
 
 .rankBadgeBronze {
-  composes: rankBadge;
-  background: #FFF1E6;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;  background: #FFF1E6;
 }
 
 .rankBadgeDefault {
-  composes: rankBadge;
-  background: var(--neutral-50);
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;  background: var(--neutral-50);
   color: var(--neutral-600);
   font-weight: 600;
 }
@@ -238,6 +259,30 @@
   }
 }
 
+
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+
+
 /* Submit Button Styles */
 .submitButton {
   width: 100%;
@@ -252,7 +297,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .submitButton:hover:not(:disabled) {
@@ -264,7 +311,52 @@
 .submitButton:disabled {
   background: var(--neutral-400);
   cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
+
+
+.loadingSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: white;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  animation: rotate 2s linear infinite;
+}
+
+.spinnerCircle {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+.submitting {
+  position: relative;
+}
+
+.submitting::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--primary-600);
+  animation: shimmer 2s infinite;
+  transform: translateX(-100%);
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 
 /* Responsive Adjustments */
 @media (max-width: 640px) {

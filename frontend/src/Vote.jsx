@@ -1,3 +1,4 @@
+// Vote.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
@@ -5,6 +6,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { GripVertical, Trophy, Medal, Check } from 'lucide-react';
 import Confetti from './Confetti';
 import Clock from './Clock';
+import Notification from './Notification'; // Import Notification
 import styles from './Vote.module.css';
 
 const MAJORS = [
@@ -86,6 +88,11 @@ const Vote = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [error, setError] = useState(null);
+  const [notification, setNotification] = useState({
+    isVisible: false,
+    message: '',
+    type: 'success', // 'success', 'error', 'info'
+  });
 
   const moveItem = (fromIndex, toIndex) => {
     const updatedMajors = [...majors];
@@ -94,9 +101,10 @@ const Vote = () => {
     setMajors(updatedMajors);
   };
 
+  // Update the handleSubmit function in Vote.jsx
   const handleSubmit = async () => {
     if (isSubmitting) return;
-
+  
     const data = {
       hasDecided: hasDecided === 'yes',
       preferences: {
@@ -105,11 +113,21 @@ const Vote = () => {
         thirdChoice: majors[2]
       }
     };
-
+  
     if (hasDecided === 'yes') {
       data.confirmedMajor = confirmedMajor;
+      
+      // Validate confirmed major matches first choice
+      if (confirmedMajor !== majors[0]) {
+        setNotification({
+          isVisible: true,
+          message: 'Your confirmed major must match your first choice! Please drag your confirmed major to the top.',
+          type: 'error'
+        });
+        return;
+      }
     }
-
+  
     try {
       setIsSubmitting(true);
       const response = await fetch('http://localhost:5000/api/survey/submit', {
@@ -119,21 +137,46 @@ const Vote = () => {
         },
         body: JSON.stringify(data)
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to submit survey');
       }
-
+  
+      // Clear form data immediately after successful submission
+      setMajors(MAJORS);
+      setHasDecided(null);
+      setConfirmedMajor('');
+      
+      setNotification({
+        isVisible: true,
+        message: 'Survey submitted successfully!',
+        type: 'success'
+      });
       setShowConfetti(true);
+      
+      // Disable all inputs by setting submitting state
+      setIsSubmitting(true);
+      
       setTimeout(() => {
         setShowConfetti(false);
         navigate('/results');
       }, 3500);
     } catch (error) {
-      setError(error.message);
       setIsSubmitting(false);
+      setNotification({
+        isVisible: true,
+        message: `Error: ${error.message}`,
+        type: 'error'
+      });
     }
+  };
+  
+  const handleNotificationClose = () => {
+    setNotification({
+      ...notification,
+      isVisible: false
+    });
   };
 
   const isValid = hasDecided !== null && 
@@ -142,12 +185,24 @@ const Vote = () => {
 
   return (
     <div className={styles.container}>
+      {/* Notification */}
+      {notification.isVisible && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          duration={5000}
+          onClose={handleNotificationClose}
+        />
+      )}
+
+      {/* Confetti Overlay */}
       {showConfetti && (
         <div className={styles.confettiOverlay}>
           <Confetti active={showConfetti} duration={3500} />
         </div>
       )}
       
+      {/* Main Content */}
       <div className={styles.content}>
         <h1 className={styles.title}>
           2T7 EngSci Major Selection Survey
@@ -161,7 +216,7 @@ const Vote = () => {
               Rank Your Preferences
             </h2>
             <p className={styles.dragSubtitle}>
-              Drag and rank the majors in your order of preference. Your top 3 choices will be recorded.
+              Drag and rank the majors in your order of preference. Your top 3 choices will be recorded. (Press and hold to drag on mobile).
             </p>
             
             <DndProvider backend={HTML5Backend}>
@@ -185,7 +240,7 @@ const Vote = () => {
             </h2>
             
             <div className={styles.decisionGroup}>
-                            <label className={`${styles.radioCard} ${hasDecided === 'yes' ? styles.selected : ''}`}>
+              <label className={`${styles.radioCard} ${hasDecided === 'yes' ? styles.selected : ''}`}>
                 <input
                   type="radio"
                   className={styles.radioInput}
@@ -233,12 +288,7 @@ const Vote = () => {
               </div>
             )}
 
-            {error && (
-              <div className={styles.error}>
-                {error}
-              </div>
-            )}
-
+            
             <button 
               className={`${styles.submitButton} ${isSubmitting ? styles.submitting : ''}`}
               onClick={handleSubmit}
@@ -246,13 +296,18 @@ const Vote = () => {
             >
               {isSubmitting ? (
                 <span className={styles.loadingSpinner}>
-                  <svg className={styles.spinner} viewBox="0 0 24 24">
-                    <circle className={styles.spinnerCircle} cx="12" cy="12" r="10" />
+                  <svg className={styles.spinner} viewBox="0 0 50 50">
+                    <circle 
+                      className={styles.spinnerCircle}
+                      cx="25" 
+                      cy="25" 
+                      r="20" 
+                    />
                   </svg>
                   Submitting...
                 </span>
               ) : 'Submit Survey'}
-            </button>
+            </button>          
           </div>
         </div>
       </div>
