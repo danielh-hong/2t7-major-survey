@@ -106,7 +106,7 @@ const seedMajors = async () => {
 // In your server.js or routes file
 router.post('/submit', async (req, res) => {
   try {
-    const { hasDecided, confirmedMajor, preferences } = req.body;
+    const { hasDecided, confirmedMajor, preferences, name } = req.body;
 
     if (!preferences || !preferences.firstChoice || !preferences.secondChoice || !preferences.thirdChoice) {
       return res.status(400).json({ error: 'You must select top 3 preferences.' });
@@ -127,7 +127,14 @@ router.post('/submit', async (req, res) => {
       }
     }
 
-    const newResponse = new Response({ hasDecided, confirmedMajor, preferences });
+    // Create new response including the optional name field
+    const newResponse = new Response({ 
+      hasDecided, 
+      confirmedMajor, 
+      preferences,
+      name: name ? name.trim() : undefined
+    });
+    
     await newResponse.save();
     
     res.status(201).json({ message: 'Survey response submitted successfully' });
@@ -234,6 +241,7 @@ router.get('/stats', async (req, res) => {
       'hasDecided': 1,
       'confirmedMajor': 1,
       'submittedAt': 1,
+      'name': 1,  // Add this line to include the name field
       '_id': 0
     }).sort({ submittedAt: -1 });
 

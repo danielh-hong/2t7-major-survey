@@ -14,6 +14,12 @@ const majorSchema = new mongoose.Schema({
 
 // database.js
 const responseSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: false,
+    trim: true,
+    maxLength: 100
+  },
   hasDecided: {
     type: Boolean,
     required: true
@@ -40,7 +46,7 @@ const responseSchema = new mongoose.Schema({
   },
   submittedAt: {
     type: Date,
-    default: Date.now  // This will automatically set the current time when a document is created
+    default: Date.now
   }
 });
 

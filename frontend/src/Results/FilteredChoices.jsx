@@ -4,10 +4,11 @@ import styles from './FilteredChoices.module.css';
 
 const FilteredChoices = ({ data }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeFilters, setActiveFilters] = useState(['first', 'second', 'third']);
-  const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'decided', 'undecided'
+  const [activeFilters, setActiveFilters] = useState(['name', 'first', 'second', 'third']);
+  const [statusFilter, setStatusFilter] = useState('all');
   
   const filterOptions = [
+    { id: 'name', label: 'Name' },
     { id: 'first', label: 'First Choice' },
     { id: 'second', label: 'Second Choice' },
     { id: 'third', label: 'Third Choice' }
@@ -19,7 +20,7 @@ const FilteredChoices = ({ data }) => {
     { id: 'undecided', label: 'Undecided' }
   ];
 
-  // Filter and search logic
+  // Enhanced filter and search logic
   const filteredData = useMemo(() => {
     return data.responses?.filter(response => {
       // Status filter
@@ -28,14 +29,17 @@ const FilteredChoices = ({ data }) => {
         (statusFilter === 'decided' && response.hasDecided) ||
         (statusFilter === 'undecided' && !response.hasDecided);
 
-      // Search filter
-      const searchMatch = searchTerm.toLowerCase() === '' || 
+      // Enhanced search filter to include name
+      const searchLower = searchTerm.toLowerCase();
+      const searchMatch = searchLower === '' || 
+        (response.name && response.name.toLowerCase().includes(searchLower)) ||
         Object.values(response.preferences || {}).some(choice => 
-          choice?.toLowerCase().includes(searchTerm.toLowerCase())
+          choice?.toLowerCase().includes(searchLower)
         );
 
-      // Column filter
+      // Enhanced column filter to include name
       const filterMatch = (
+        (activeFilters.includes('name') && response.name) ||
         (activeFilters.includes('first') && response.preferences?.firstChoice) ||
         (activeFilters.includes('second') && response.preferences?.secondChoice) ||
         (activeFilters.includes('third') && response.preferences?.thirdChoice)
@@ -45,7 +49,6 @@ const FilteredChoices = ({ data }) => {
     }) || [];
   }, [data.responses, searchTerm, activeFilters, statusFilter]);
 
-  // Calculate stats for filtered data
   const stats = useMemo(() => ({
     totalResponses: filteredData.length,
     decidedCount: filteredData.filter(r => r.hasDecided).length,
@@ -82,7 +85,7 @@ const FilteredChoices = ({ data }) => {
           <Search className={styles.searchIcon} size={20} />
           <input
             type="text"
-            placeholder="Search by major..."
+            placeholder="Search by name or major..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className={styles.searchInput}
@@ -157,6 +160,7 @@ const FilteredChoices = ({ data }) => {
         <table className={styles.table}>
           <thead>
             <tr>
+              {activeFilters.includes('name') && <th>Name</th>}
               {activeFilters.includes('first') && <th>First Choice</th>}
               {activeFilters.includes('second') && <th>Second Choice</th>}
               {activeFilters.includes('third') && <th>Third Choice</th>}
@@ -166,6 +170,9 @@ const FilteredChoices = ({ data }) => {
           <tbody>
             {filteredData.map((response, index) => (
               <tr key={index}>
+                {activeFilters.includes('name') && (
+                  <td>{response.name || '-'}</td>
+                )}
                 {activeFilters.includes('first') && (
                   <td>{response.preferences?.firstChoice}</td>
                 )}

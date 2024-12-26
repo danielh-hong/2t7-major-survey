@@ -62,6 +62,7 @@ const Vote = ({ onSuccessfulVote }) => {
   const [majors, setMajors] = useState(MAJORS);
   const [hasDecided, setHasDecided] = useState(null);
   const [confirmedMajor, setConfirmedMajor] = useState('');
+  const [name, setName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [notification, setNotification] = useState({
@@ -82,7 +83,6 @@ const Vote = ({ onSuccessfulVote }) => {
   const handleSubmit = async () => {
     if (isSubmitting) return;
 
-    // Check if already voted first
     if (localStorage.getItem('has_voted')) {
       setNotification({
         isVisible: true,
@@ -108,10 +108,10 @@ const Vote = ({ onSuccessfulVote }) => {
         firstChoice: majors[0],
         secondChoice: majors[1],
         thirdChoice: majors[2]
-      }
+      },
+      name: name.trim() || undefined // Only include name if it's not empty
     };
 
-    // Check if decided but confirmed major doesn't match first choice
     if (hasDecided === 'yes') {
       data.confirmedMajor = confirmedMajor;
       
@@ -194,6 +194,22 @@ const Vote = ({ onSuccessfulVote }) => {
         <h1 className={styles.title}>2T7 EngSci Major Selection Survey</h1>
         <Clock />
         <div className={styles.card}>
+
+          <div className={styles.nameField}>
+            <h2 className={styles.nameLabel}>Your Name (Optional)</h2>
+            <p className={styles.nameDescription}>
+              Share your name if you'd like to be identified in the results.
+            </p>
+            <input
+              type="text"
+              className={styles.nameInput}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter your name"
+              maxLength={100}
+            />
+          </div>
+
           <div>
             <h2 className={styles.dragTitle}>Rank Your Preferences</h2>
             <p className={styles.dragSubtitle}>

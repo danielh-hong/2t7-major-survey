@@ -214,6 +214,17 @@
   border-bottom: 1px solid var(--neutral-200);
 }
 
+/* Name column specific styles */
+.table td:first-child {
+  font-weight: 500;
+  color: var(--neutral-800);
+}
+
+.table td:first-child:empty::before {
+  content: '-';
+  color: var(--neutral-400);
+}
+
 .table tr:hover td {
   background: var(--neutral-50);
 }
@@ -302,6 +313,6 @@
   }
 
   .table {
-    min-width: 600px;
+    min-width: 720px; /* Increased to accommodate name column */
   }
 }

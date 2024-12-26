@@ -355,6 +355,43 @@
   }
 }
 
+.nameField {
+  margin-bottom: 2rem;
+}
+
+.nameLabel {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--neutral-900);
+  margin-bottom: 0.5rem;
+}
+
+.nameDescription {
+  color: var(--neutral-600);
+  margin-bottom: 1rem;
+}
+
+.nameInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid var(--neutral-200);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.nameInput:hover {
+  border-color: var(--primary-400);
+}
+
+.nameInput:focus {
+  outline: none;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px var(--primary-100);
+}
+
 /* Responsive Adjustments */
 @media (max-width: 640px) {
   .content {
