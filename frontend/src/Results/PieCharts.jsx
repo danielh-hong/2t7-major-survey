@@ -26,9 +26,48 @@ const PieCharts = ({ data }) => {
   }, []);
 
   const choices = [
-    { key: 'first', name: 'First Choice', colors: ['#4CAF50', '#81C784', '#A5D6A7', '#C8E6C9', '#E8F5E9', '#B2DFDB', '#80CBC4', '#4DB6AC'] },
-    { key: 'second', name: 'Second Choice', colors: ['#2196F3', '#64B5F6', '#90CAF9', '#BBDEFB', '#E3F2FD', '#B3E5FC', '#81D4FA', '#4FC3F7'] },
-    { key: 'third', name: 'Third Choice', colors: ['#FFC107', '#FFD54F', '#FFE082', '#FFECB3', '#FFF8E1', '#FFE0B2', '#FFCC80', '#FFB74D'] }
+    { 
+      key: 'first', 
+      name: 'First Choice', 
+      colors: [
+        '#2E86AB', // Deep Blue
+        '#F6511D', // Bright Orange
+        '#7B2D26', // Dark Red
+        '#5FAD56', // Green
+        '#9B4DCA', // Purple
+        '#F0C808', // Yellow
+        '#3B7080', // Teal
+        '#D64933'  // Coral
+      ]
+    },
+    { 
+      key: 'second', 
+      name: 'Second Choice', 
+      colors: [
+        '#00A896', // Teal
+        '#FF6B6B', // Salmon
+        '#4ECDC4', // Turquoise
+        '#FFD93D', // Gold
+        '#95A5A6', // Gray
+        '#E84855', // Red
+        '#6C5B7B', // Purple
+        '#45B7D1'  // Light Blue
+      ]
+    },
+    { 
+      key: 'third', 
+      name: 'Third Choice', 
+      colors: [
+        '#FF9F1C', // Orange
+        '#2EC4B6', // Turquoise
+        '#E71D36', // Red
+        '#662E9B', // Purple
+        '#43AA8B', // Green
+        '#F46036', // Coral
+        '#2B50AA', // Blue
+        '#7F2982'  // Magenta
+      ]
+    }
   ];
 
   const formatData = (choiceType) => {
