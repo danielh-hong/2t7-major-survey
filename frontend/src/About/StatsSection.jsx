@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { TrendingUp, Users } from 'lucide-react';
 import styles from './StatsSection.module.css';
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const BASE_URL = import.meta.env.VITE_DEPLOYED_BACKEND_API_URL;
 
 const StatsCard = ({ title, value, subtitle, icon: Icon }) => {
   const [isVisible, setIsVisible] = useState(false);
