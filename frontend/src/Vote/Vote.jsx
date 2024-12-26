@@ -183,7 +183,7 @@ const Vote = ({ onSuccessfulVote }) => {
           onClose={handleNotificationClose}
         />
       )}
-
+  
       {showConfetti && (
         <div className={styles.confettiOverlay}>
           <Confetti active={showConfetti} duration={3500} />
@@ -194,27 +194,29 @@ const Vote = ({ onSuccessfulVote }) => {
         <h1 className={styles.title}>2T7 EngSci Major Selection Survey</h1>
         <Clock />
         <div className={styles.card}>
-          <div className={styles.dragArea}>
+          <div>
             <h2 className={styles.dragTitle}>Rank Your Preferences</h2>
             <p className={styles.dragSubtitle}>
               Drag and rank the majors in your order of preference. Your top 3 choices will be recorded. (Press and hold to drag on mobile).
             </p>
             
-            <DndProvider backend={HTML5Backend}>
-              <div>
-                {majors.map((major, index) => (
-                  <DraggableItem
-                    key={major}
-                    id={major}
-                    index={index}
-                    text={major}
-                    moveItem={moveItem}
-                  />
-                ))}
-              </div>
-            </DndProvider>
+            <div className={styles.dragArea}>
+              <DndProvider backend={HTML5Backend}>
+                <div>
+                  {majors.map((major, index) => (
+                    <DraggableItem
+                      key={major}
+                      id={major}
+                      index={index}
+                      text={major}
+                      moveItem={moveItem}
+                    />
+                  ))}
+                </div>
+              </DndProvider>
+            </div>
           </div>
-
+  
           <div className={styles.decisionSection}>
             <h2 className={styles.decisionTitle}>Have you decided on your major?</h2>
             
@@ -231,7 +233,7 @@ const Vote = ({ onSuccessfulVote }) => {
                 <Check className={hasDecided === 'yes' ? 'text-primary-500' : 'text-neutral-300'} />
                 <span className={styles.radioLabel}>Yes, I'm certain</span>
               </label>
-
+  
               <label className={`${styles.radioCard} ${hasDecided === 'no' ? styles.selected : ''}`}>
                 <input
                   type="radio"
@@ -244,7 +246,7 @@ const Vote = ({ onSuccessfulVote }) => {
                 <span className={styles.radioLabel}>No, still deciding</span>
               </label>
             </div>
-
+  
             {hasDecided === 'yes' && (
               <div className={styles.fadeIn}>
                 <h3 className={styles.decisionTitle}>Select Your Confirmed Major</h3>
@@ -262,7 +264,7 @@ const Vote = ({ onSuccessfulVote }) => {
                 </div>
               </div>
             )}
-
+  
             <button 
               className={`${styles.submitButton} ${isSubmitting ? styles.submitting : ''}`}
               onClick={handleSubmit}

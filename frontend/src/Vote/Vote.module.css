@@ -37,7 +37,6 @@
   border-radius: var(--radius-lg);
   padding: 1.5rem;
   margin-bottom: 2rem;
-  touch-action: none; /* Prevents scrolling while dragging on mobile */
 }
 
 .dragTitle {
@@ -65,7 +64,7 @@
   transition: all 0.2s ease;
   border-left: 4px solid transparent;
   margin-bottom: 0.5rem;
-  touch-action: none;
+  touch-action: none !important; /* Ensures drag works on mobile while allowing scroll elsewhere */
 }
 
 .majorItem:active {
@@ -123,7 +122,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 1rem;  background: #F5F5F5;
+  margin-right: 1rem;
+  background: #F5F5F5;
 }
 
 .rankBadgeBronze {
@@ -133,7 +133,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 1rem;  background: #FFF1E6;
+  margin-right: 1rem;
+  background: #FFF1E6;
 }
 
 .rankBadgeDefault {
@@ -143,7 +144,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 1rem;  background: var(--neutral-50);
+  margin-right: 1rem;
+  background: var(--neutral-50);
   color: var(--neutral-600);
   font-weight: 600;
 }
@@ -259,30 +261,6 @@
   }
 }
 
-
-@keyframes rotate {
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-@keyframes dash {
-  0% {
-    stroke-dasharray: 1, 150;
-    stroke-dashoffset: 0;
-  }
-  50% {
-    stroke-dasharray: 90, 150;
-    stroke-dashoffset: -35;
-  }
-  100% {
-    stroke-dasharray: 90, 150;
-    stroke-dashoffset: -124;
-  }
-}
-
-
-
 /* Submit Button Styles */
 .submitButton {
   width: 100%;
@@ -314,7 +292,6 @@
   transform: none;
   box-shadow: none;
 }
-
 
 .loadingSpinner {
   display: flex;
@@ -351,12 +328,32 @@
   transform: translateX(-100%);
 }
 
+@keyframes rotate {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
 @keyframes shimmer {
   100% {
     transform: translateX(100%);
   }
 }
-
 
 /* Responsive Adjustments */
 @media (max-width: 640px) {
