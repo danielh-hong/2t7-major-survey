@@ -94,6 +94,8 @@ const Vote = () => {
     type: 'success', // 'success', 'error', 'info'
   });
 
+  const BASE_URL = import.meta.env.VITE_BACKEND_API_URL; // Dynamically set backend URL
+
   const moveItem = (fromIndex, toIndex) => {
     const updatedMajors = [...majors];
     const [movedItem] = updatedMajors.splice(fromIndex, 1);
@@ -130,14 +132,14 @@ const Vote = () => {
   
     try {
       setIsSubmitting(true);
-      const response = await fetch('http://localhost:5000/api/survey/submit', {
+      const response = await fetch(`${BASE_URL}/api/survey/submit`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       });
-  
+    
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to submit survey');

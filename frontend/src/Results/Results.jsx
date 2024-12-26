@@ -34,13 +34,15 @@ const Results = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const BASE_URL = import.meta.env.VITE_BACKEND_API_URL; // Dynamically set backend URL
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
-      const response = await fetch('http://localhost:5000/api/survey/stats');
+      const response = await fetch(`${BASE_URL}/api/survey/stats`);
       if (!response.ok) throw new Error('Failed to fetch data');
       const result = await response.json();
       setData(result);
@@ -193,6 +195,5 @@ const Results = () => {
     </div>
   );
 };
-
 
 export default Results;
