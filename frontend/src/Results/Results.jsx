@@ -8,6 +8,7 @@ import {
   HelpCircle 
 } from 'lucide-react';
 import FilteredChoices from './FilteredChoices';
+import Loading from '../Loading'; // Add this import
 import styles from './Results.module.css';
 
 // Import chart components (assuming they exist)
@@ -52,12 +53,12 @@ const Results = () => {
 
   if (loading) {
     return (
-      <div className={styles.loadingState}>
-        <div className={styles.loadingText}>Loading results...</div>
+      <div className={styles.loadingContainer}>
+        <Loading />
       </div>
     );
   }
-
+  
   if (error) {
     return (
       <div className={styles.errorState}>

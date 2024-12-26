@@ -97,3 +97,24 @@
     transform: scale(1.2);
   }
 }
+
+/* New Styles for Credit Text */
+.creditText {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 15px;
+  color: rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  user-select: none;
+  transition: opacity 0.3s ease;
+  font-family: 'Pacifico', cursive;
+}
+
+@media (max-width: 600px) {
+  .creditText {
+    font-size: 10px;
+    bottom: 5px;
+    left: 5px;
+  }
+}

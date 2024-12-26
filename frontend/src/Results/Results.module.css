@@ -207,7 +207,7 @@
 }
 
 /* Loading & Error States */
-.loadingState, .errorState {
+.errorState {
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -215,10 +215,10 @@
   background: var(--neutral-50);
 }
 
-.loadingText {
-  font-size: 1.5rem;
-  color: var(--primary-600);
-  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+.loadingContainer {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
 }
 
 .errorText {

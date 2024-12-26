@@ -1,0 +1,56 @@
+.loadingContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.loadingContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.dotContainer {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.dot {
+  width: 1rem;
+  height: 1rem;
+  background-color: #3b82f6; /* Tailwind blue-500 */
+  border-radius: 9999px;
+  animation: bounce 0.8s infinite;
+}
+
+.loadingText {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #4b5563; /* Tailwind gray-600 */
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1rem);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .7;
+  }
+}

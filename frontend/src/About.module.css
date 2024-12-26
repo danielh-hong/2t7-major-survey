@@ -174,24 +174,6 @@
   box-shadow: var(--shadow-lg);
 }
 
-.alternativeContact {
-  margin-top: 2rem;
-  text-align: center;
-  color: var(--neutral-600);
-}
-
-.alternativeContact a {
-  color: var(--primary-600);
-  text-decoration: none;
-  font-weight: 600;
-  transition: color 0.3s ease;
-}
-
-.alternativeContact a:hover {
-  color: var(--primary-700);
-}
-
-
 
 .errorInput {
   border-color: var(--error-500) !important;

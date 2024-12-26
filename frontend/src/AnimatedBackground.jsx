@@ -106,6 +106,11 @@ const AnimatedBackground = () => {
           </div>
         </div>
       ))}
+
+      {/* Credit Text */}
+      <div className={styles.creditText}>
+        Made by a Fellow 2t7 😊
+      </div>
     </div>
   );
 };

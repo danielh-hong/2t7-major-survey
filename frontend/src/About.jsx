@@ -194,13 +194,6 @@ const About = () => {
           </button>
         </form>
 
-        <div className={styles.alternativeContact}>
-          <p>
-            Alternative Contact: {' '}
-            <a href="https://www.instagram.com/dqnielhong/" target="_blank" rel="noopener noreferrer">Instagram</a> | {' '}
-            <a href="mailto:danielh.toronto@gmail.com">Email</a>
-          </p>
-        </div>
       </div>
 
       {notification && (
