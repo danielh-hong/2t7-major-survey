@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: engsci-survey-backend
+    env: node
+    buildCommand: cd backend && npm install  # Adjust path if different
+    startCommand: cd backend && node server.js
+    rootDirectory: backend  # Add this line
+    envVars:
+      - key: MONGO_USER
+        sync: false
+      - key: MONGO_PASSWORD
+        sync: false
+      - key: PORT
+        value: 10000 # this is the port that the backend will run on that render will expose
