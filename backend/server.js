@@ -7,7 +7,12 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173'], // local development for now
+  // 'https://your-frontend-domain.com'  // Add later the frontend domain
+  methods: ['GET', 'POST'],
+  credentials: true // Allow credentials (cookies, authorization headers, etc.) to be included in requests
+}));
 app.use(express.json());
 
 // MongoDB Connection
