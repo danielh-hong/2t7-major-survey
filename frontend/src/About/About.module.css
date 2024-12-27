@@ -133,14 +133,20 @@
   color: var(--neutral-700);
 }
 
+/* Updated Input Styles */
 .formGroup input,
 .formGroup textarea {
   width: 100%;
+  max-width: 100%;
   padding: 1rem;
   border: 1px solid var(--neutral-300);
   border-radius: var(--radius-lg);
   font-size: 1rem;
   transition: all 0.3s ease;
+  background-color: white;
+  color: var(--neutral-900);
+  box-sizing: border-box;
+  resize: vertical;
 }
 
 .formGroup input:focus,
@@ -148,6 +154,18 @@
   border-color: var(--primary-500);
   outline: none;
   box-shadow: 0 0 0 3px var(--glow-primary);
+  background-color: white;
+}
+
+/* Webkit Autofill Styling */
+.formGroup input:-webkit-autofill,
+.formGroup input:-webkit-autofill:hover,
+.formGroup input:-webkit-autofill:focus,
+.formGroup textarea:-webkit-autofill,
+.formGroup textarea:-webkit-autofill:hover,
+.formGroup textarea:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  -webkit-text-fill-color: var(--neutral-900) !important;
 }
 
 .submitButton {
@@ -186,7 +204,7 @@
 
 .errorInput {
   border-color: var(--error-500) !important;
-  background-color: var(--error-50);
+  background-color: var(--error-50) !important;
 }
 
 .errorMessage {
@@ -213,7 +231,6 @@
   cursor: not-allowed;
   transform: none;
 }
-
 
 /* Responsive Adjustments */
 @media (max-width: 1024px) {
