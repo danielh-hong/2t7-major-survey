@@ -37,6 +37,7 @@
   border: 1px solid var(--neutral-200);
   border-radius: var(--radius-lg);
   font-size: 1rem;
+  background-color: white;
   color: var(--neutral-900);
   transition: all 0.2s ease;
 }
@@ -212,6 +213,7 @@
   padding: 1rem 1.5rem;
   color: var(--neutral-700);
   border-bottom: 1px solid var(--neutral-200);
+  background: white;
 }
 
 /* Name column specific styles */
@@ -326,6 +328,6 @@
   }
 
   .table {
-    min-width: 720px; /* Increased to accommodate name column */
+    min-width: 720px;
   }
 }

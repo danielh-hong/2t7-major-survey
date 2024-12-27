@@ -29,21 +29,30 @@ const FilteredChoices = ({ data }) => {
         (statusFilter === 'decided' && response.hasDecided) ||
         (statusFilter === 'undecided' && !response.hasDecided);
 
-      // Enhanced search filter to include name
+      // Search filter - only search in active columns
       const searchLower = searchTerm.toLowerCase();
-      const searchMatch = searchLower === '' || 
-        (response.name && response.name.toLowerCase().includes(searchLower)) ||
-        Object.values(response.preferences || {}).some(choice => 
-          choice?.toLowerCase().includes(searchLower)
-        );
-
-      // Enhanced column filter to include name
-      const filterMatch = (
-        (activeFilters.includes('name') && response.name) ||
-        (activeFilters.includes('first') && response.preferences?.firstChoice) ||
-        (activeFilters.includes('second') && response.preferences?.secondChoice) ||
-        (activeFilters.includes('third') && response.preferences?.thirdChoice)
+      const searchMatch = searchLower === '' || (
+        (activeFilters.includes('name') && response.name?.toLowerCase().includes(searchLower)) ||
+        (activeFilters.includes('first') && response.preferences?.firstChoice?.toLowerCase().includes(searchLower)) ||
+        (activeFilters.includes('second') && response.preferences?.secondChoice?.toLowerCase().includes(searchLower)) ||
+        (activeFilters.includes('third') && response.preferences?.thirdChoice?.toLowerCase().includes(searchLower))
       );
+
+      // Column filter - check each active filter independently
+      const filterMatch = activeFilters.some(filter => {
+        switch(filter) {
+          case 'name':
+            return response.name;
+          case 'first':
+            return response.preferences?.firstChoice;
+          case 'second':
+            return response.preferences?.secondChoice;
+          case 'third':
+            return response.preferences?.thirdChoice;
+          default:
+            return false;
+        }
+      });
 
       return statusMatch && searchMatch && filterMatch;
     }) || [];
@@ -188,13 +197,13 @@ const FilteredChoices = ({ data }) => {
               <tr key={index}>
                 {activeFilters.includes('name') && renderNameCell(response.name)}
                 {activeFilters.includes('first') && (
-                  <td>{response.preferences?.firstChoice}</td>
+                  <td>{response.preferences?.firstChoice || '-'}</td>
                 )}
                 {activeFilters.includes('second') && (
-                  <td>{response.preferences?.secondChoice}</td>
+                  <td>{response.preferences?.secondChoice || '-'}</td>
                 )}
                 {activeFilters.includes('third') && (
-                  <td>{response.preferences?.thirdChoice}</td>
+                  <td>{response.preferences?.thirdChoice || '-'}</td>
                 )}
                 <td>
                   <span className={`${styles.statusBadge} ${
