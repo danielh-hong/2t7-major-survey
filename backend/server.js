@@ -8,10 +8,30 @@ const app = express();
 
 // Middleware
 app.use(express.json()); // Add this line to parse JSON bodies
+const allowedOrigins = [
+  'http://2t7.vercel.app',
+  'https://2t7.vercel.app',
+  'http://www.2t7.vercel.app',
+  'https://www.2t7.vercel.app',
+  'http://2t7-major-survey.vercel.app',
+  'https://2t7-major-survey.vercel.app',
+  'http://www.2t7-major-survey.vercel.app',
+  'https://www.2t7-major-survey.vercel.app',
+  'http://localhost:3000',
+  'http://localhost:5000',
+  'http://localhost:5173',
+];
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://2t7-major-survey.vercel.app'], // Add all allowed origins here
-  methods: ['GET', 'POST', 'OPTIONS'], // Include OPTIONS method
-  credentials: true // Allow credentials (e.g., cookies, authorization headers)
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  credentials: true
 }));
 
 // Add fallback for preflight response

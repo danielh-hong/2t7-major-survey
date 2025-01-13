@@ -4,7 +4,15 @@ import styles from './StatsSection.module.css';
 
 const BASE_URL = import.meta.env.VITE_DEPLOYED_BACKEND_API_URL;
 
-const StatsCard = ({ title, value, subtitle, icon: Icon }) => {
+const LoadingValue = () => (
+  <div className={styles.loadingContainer}>
+    <div className={styles.loadingDot}></div>
+    <div className={`${styles.loadingDot} ${styles.loadingDotDelay1}`}></div>
+    <div className={`${styles.loadingDot} ${styles.loadingDotDelay2}`}></div>
+  </div>
+);
+
+const StatsCard = ({ title, value, subtitle, icon: Icon, isLoading }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -21,9 +29,15 @@ const StatsCard = ({ title, value, subtitle, icon: Icon }) => {
         <h3 className={styles.title}>{title}</h3>
       </div>
       <div className={styles.valueWrapper}>
-        <span className={styles.value}>{value.toLocaleString()}</span>
-        {subtitle && (
-          <span className={styles.subtitle}>{subtitle}</span>
+        {isLoading ? (
+          <LoadingValue />
+        ) : (
+          <>
+            <span className={styles.value}>{value.toLocaleString()}</span>
+            {subtitle && (
+              <span className={styles.subtitle}>{subtitle}</span>
+            )}
+          </>
         )}
       </div>
     </div>
@@ -32,39 +46,38 @@ const StatsCard = ({ title, value, subtitle, icon: Icon }) => {
 
 const StatsSection = () => {
   const [stats, setStats] = useState({
-    totalResponses: 0,
-    totalVisits: 0
+    totalResponses: null,
+    totalVisits: null
   });
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchAndInitialize = async () => {
       try {
-        // Check if this browser has already visited
         const hasVisitedBefore = localStorage.getItem('hasVisited');
         
         if (!hasVisitedBefore) {
-          // Log visit only if haven't visited before
           await fetch(`${BASE_URL}/api/survey/visit`, {
             method: 'POST'
           });
           localStorage.setItem('hasVisited', 'true');
         }
 
-        // Fetch stats
         const response = await fetch(`${BASE_URL}/api/survey/stats`);
         const data = await response.json();
         setStats({
           totalResponses: data.totalResponses,
           totalVisits: data.totalVisits
         });
+        setIsLoading(false);
       } catch (error) {
         console.error('Error:', error);
+        setIsLoading(false);
       }
     };
 
     fetchAndInitialize();
 
-    // Set up polling for stats updates
     const interval = setInterval(async () => {
       try {
         const response = await fetch(`${BASE_URL}/api/survey/stats`);
@@ -76,7 +89,7 @@ const StatsSection = () => {
       } catch (error) {
         console.error('Error refreshing stats:', error);
       }
-    }, 300000);
+    }, 0.5*60*1000); // Refresh every 30 seconds
 
     return () => clearInterval(interval);
   }, []);
@@ -86,15 +99,17 @@ const StatsSection = () => {
       <div className={styles.statsContainer}>
         <StatsCard
           title="Total Survey Responses"
-          value={stats.totalResponses}
+          value={stats.totalResponses || 0}
           subtitle="responses collected"
           icon={TrendingUp}
+          isLoading={isLoading || stats.totalResponses === null}
         />
         <StatsCard
           title="Total Site Visits"
-          value={stats.totalVisits}
+          value={stats.totalVisits || 0}
           subtitle="unique visitors"
           icon={Users}
+          isLoading={isLoading || stats.totalVisits === null}
         />
       </div>
     </div>

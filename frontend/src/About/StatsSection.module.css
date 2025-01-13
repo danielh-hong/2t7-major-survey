@@ -5,7 +5,6 @@
   overflow: visible;
 }
 
-
 .statsContainer {
   max-width: 1200px;
   margin: 0 auto;
@@ -122,6 +121,41 @@
   color: var(--neutral-500);
 }
 
+/* Loading Animation */
+.loadingContainer {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  height: 2.5rem;
+}
+
+.loadingDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: var(--primary-400);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+
+.loadingDotDelay1 {
+  animation-delay: 0.2s;
+}
+
+.loadingDotDelay2 {
+  animation-delay: 0.4s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @media (max-width: 768px) {
   .statsContainer {
     grid-template-columns: 1fr;
@@ -133,7 +167,6 @@
 }
 
 @media (max-width: 480px) {
-
   .cardHeader {
     margin-bottom: 1rem;
   }

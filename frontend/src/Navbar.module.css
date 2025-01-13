@@ -3,6 +3,7 @@
   padding: 1rem 0;
   position: relative;
   background-color: var(--background-color); /* Optional: Set a background color */
+  z-index: 9999;
 }
 
 .container {
